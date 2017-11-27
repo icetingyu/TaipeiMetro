@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/routeContainer"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="#ffffff">
+
+    <RelativeLayout
+        android:id="@+id/iconContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        >
+        <ImageView
+            android:id="@+id/progressLineIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:src="@drawable/yellow_progress"
+            android:scaleType="fitXY"
+            android:visibility="visible"/>
+        <TextView
+            android:id="@+id/stationNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="413B"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/stationName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#333333"
+        android:layout_marginLeft="10dp"
+        tools:text="Detail"
+        android:textStyle="bold"
+        android:layout_toRightOf="@id/iconContainer"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:textSize="18sp"
+        android:visibility="visible"/>
+</RelativeLayout>

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Taipei Metro</string>
+    <string name="singleRide">Single Ride</string>
+    <string name="easyCard">EasyCard</string>
+    <string name="concessionaire">Concession</string>
+    <string name="priceTag" translatable="false">" NT$"</string>
+    <string name="timecost">"Travel Time: "</string>
+    <string name="timeunit">" mins"</string>
+    <string name="take">Take</string>
+    <string name="transfer">Transfer to</string>
+    <string name="from">"From "</string>
+    <string name="to">" To "</string>
+    <string name="needTransfer">"Need to transfer "</string>
+    <string name="times">" times,"</string>
+    <string name="about">" about "</string>
+    <string name="arrive">" to arrive."</string>
+    <string name="intro">Much more friendly!</string>
+    <string name="nearestStation">"Your Nearest MRT Station is -"</string>
+    <string name="locale">Locale</string>
+    <string name="language">Language</string>
+</resources>

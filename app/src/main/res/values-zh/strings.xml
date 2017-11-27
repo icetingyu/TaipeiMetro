@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">台北捷運</string>
+    <string name="easyCard">悠遊卡</string>
+    <string name="timeunit">" 分鐘"</string>
+    <string name="timecost">區間搭乘時間</string>
+    <string name="take">搭乘</string>
+    <string name="singleRide">單程票</string>
+    <string name="concessionaire">優待卡</string>
+    <string name="transfer">轉乘</string>
+    <string name="times">" 次,"</string>
+    <string name="to">" 到 "</string>
+    <string name="from">"從 "</string>
+    <string name="arrive">" 抵達."</string>
+    <string name="about">" 約 "</string>
+    <string name="needTransfer">"需轉乘 "</string>
+    <string name="intro">更友善好用的捷運 App!</string>
+    <string name="nearestStation">距離您最近的捷運站是 -</string>
+    <string name="locale">定位</string>
+    <string name="language">切換語系</string>
+</resources>
