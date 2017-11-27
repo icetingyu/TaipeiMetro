@@ -73,12 +73,28 @@
         android:orientation="vertical"
         android:animateLayoutChanges="true">
 
-        <WebView
-            android:id="@+id/mapView"
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
-            android:layout_below="@id/titleBar" />
+            android:layout_below="@id/titleBar">
+
+
+            <WebView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <TextView
+                android:id="@+id/error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:textColor="#505050"
+                android:text="NO NETWORK\nPlease try again"/>
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

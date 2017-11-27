@@ -16,6 +16,10 @@
     <string name="needTransfer">"需轉乘 "</string>
     <string name="intro">更友善好用的捷運 App!</string>
     <string name="nearestStation">距離您最近的捷運站是 -</string>
-    <string name="locale">定位</string>
+    <string name="location">定位</string>
     <string name="language">切換語系</string>
+    <string name="permissionRequestExplanation">定位權限用於找尋離您最近的捷運站.</string>
+    <string name="permissionEnableHint">如果您想要開啟定位權限.</string>
+    <string name="permissionEnableSolution">請到設置中賦予此應用定位權限</string>
+
 </resources>

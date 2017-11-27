@@ -174,7 +174,7 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
-        if (id == R.id.locale) {
+        if (id == R.id.location) {
             MetroMapFragment fragment = (MetroMapFragment) getSupportFragmentManager().findFragmentById(R.id.container);
             fragment.getCurrentLocation();
             return true;

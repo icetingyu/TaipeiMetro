@@ -4,15 +4,22 @@ package hsu.icesimon.taipeimetro;
  * Created by Simon Hsu on 3/29/15.
  */
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
@@ -39,6 +46,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import android.support.design.widget.Snackbar;
+
 
 
 @SuppressLint({ "JavascriptInterface", "SetJavaScriptEnabled" })
@@ -71,6 +80,8 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
     private String locale2;
     private final double EARTH_RADIUS = 6378137.0;
 
+    private static final int REQUEST_CODE_ASK_ASSESS_FINE_LOCATION_PERMISSIONS = 101;
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -96,11 +107,9 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
         String locale2 = Locale.getDefault().getCountry();
         Log.d("locale2: "+locale2);
         Locale myLocale = null;
-        if (!locale.equals("zh_TW"))
-        {
+        if (!locale.equals("zh_TW")) {
             myLocale = new Locale(locale);
-        }
-        else {
+        } else {
             myLocale = Locale.TRADITIONAL_CHINESE;
         }
         Resources res = getActivity().getResources();
@@ -194,33 +203,16 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
         return rootView;
     }
 
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        ((MainActivity) activity).onSectionAttached(
-//                getArguments().getInt(ARG_SECTION_NUMBER));
-//    }
-
     private void setup() {
         myWebView.requestFocus();
         myWebView.getSettings().setJavaScriptEnabled(true);
         myWebView.getSettings().setBuiltInZoomControls(true);
         myWebView.getSettings().setDisplayZoomControls(false);
-        //        myWebView.getSettings().setBuiltInZoomControls(true);
         myWebView.getSettings().setUseWideViewPort(true);
         myWebView.getSettings().setDomStorageEnabled(true);
         myWebView.addJavascriptInterface(new JavaScriptInterface(), "JSInterface");
         myWebView.setWebViewClient(new MyWebViewClient());
         myWebView.loadUrl("file:///android_asset/www/index.html");
-//        myWebView.setPictureListener(new WebView.PictureListener() {
-//
-//            @Override
-//            public void onNewPicture(WebView view, Picture picture) {
-//                myWebView.scrollTo(1000, 1000);
-//
-//            }
-//        });
-//        myWebView.getSettings().setDefaultZoom(Z);
     }
 
 
@@ -280,8 +272,7 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                         selectPair = new JSONObject(str);
                         startStn = selectPair.getString("StartChs");
                         endStn = selectPair.getString("EndChs");
-                        if (!startStn.equals("null"))
-                        {
+                        if (!startStn.equals("null")) {
                             guideBar.setVisibility(View.VISIBLE);
                             startStation.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
@@ -294,25 +285,21 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                                 }
                             }
                             else {
-                                if (parsedStartStn.length() > 6)
-                                {
+                                if (parsedStartStn.length() > 6) {
                                     startStation.setTextSize(15);
-                                }
-                                else
-                                {
+                                } else {
                                     startStation.setTextSize(20);
                                 }
                             }
                             startStation.setText(parsedStartStn);
                         }
-                        else
-                        {
+                        else {
                             guideBar.setVisibility(View.GONE);
                             startStation.setVisibility(View.INVISIBLE);
                             arrow.setVisibility(View.INVISIBLE);
                         }
-                        if (!endStn.equals("null"))
-                        {
+
+                        if (!endStn.equals("null")) {
                             realTimeCalcualte();
                             endStation.setVisibility(View.VISIBLE);
                             String parsedStartStn = findStationName(endStn);
@@ -338,15 +325,13 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                             String[] routeArray = rawRouteGuide.split("=>");
                             int routestations = routeArray.length-1;
                             int transfers = 0;
-                            for (int i = 0 ; i < routeArray.length ; i++)
-                            {
+                            for (int i = 0 ; i < routeArray.length ; i++) {
                                 String info = routeArray[i];
                                 if (info.contains("轉乘")) {
                                     transfers++;
                                 }
                             }
-                            if (locale.equals("zh_TW"))
-                            {
+                            if (locale.equals("zh_TW")) {
 
                             }
                             String timesDesc = getString(R.string.times);
@@ -414,48 +399,32 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
         String timeCost = "";
         String routeGuide = "";
         ArrayList<String> tickets = new ArrayList<String>();
-        Gson gson = new Gson();
         int startStnId = 0;
         int endStnId = 0;
         try {
             String startStntw = selectPair.getString("StartChs");
             String endStnzh_TW = selectPair.getString("EndChs");
 
-            // Log.d("startStntw : "+startStntw+ ". endStnzh_TW : "+endStnzh_TW);
-
-
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(startStntw))
-                {
+            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++) {
+                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(startStntw)) {
                     startStnId = MainActivity.allMetroStationObjs.get(i).getId();
-                    // Log.d("StartStation: "+gson.toJson(MainActivity.allMetroStationObjs.get(i)));
                     break;
                 }
             }
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(endStnzh_TW))
-                {
+
+            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++) {
+                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(endStnzh_TW)) {
                     endStnId = MainActivity.allMetroStationObjs.get(i).getId();
-                    // Log.d("EndStation: "+gson.toJson(MainActivity.allMetroStationObjs.get(i)));
                     break;
                 }
             }
-            // Log.d(" MainActivity.allMetroInfoObjs: "+ MainActivity.allMetroInfoObjs);
-            // Log.d("startStnId: "+startStnId+" . endStnId : "+endStnId);
-            for (int i = 0 ; i < MainActivity.allMetroInfoObjs.size(); i++)
-            {
+
+            for (int i = 0 ; i < MainActivity.allMetroInfoObjs.size(); i++) {
                 MetroInfoObj obj = MainActivity.allMetroInfoObjs.get(i);
-//                        if (obj.getStartStnId() ==  endStnId && obj.getEndStnId() == startStnId)
-                if (obj.getStartStnId() ==  startStnId && obj.getEndStnId() == endStnId)
-                {
+                if (obj.getStartStnId() ==  startStnId && obj.getEndStnId() == endStnId) {
                     routeGuide = obj.getTransferInfo();
                     timeCost = obj.getTimeCost();
                     tickets = obj.getTickets();
-//                    // Log.d("routeGuide : "+routeGuide);
-//                    // Log.d("timeCost : "+timeCost);
-//                    // Log.d("tickets : "+tickets.toString());
                     break;
                 }
             }
@@ -473,33 +442,22 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
 
     private String findStationName(String stationzh_TW) {
         String stationName = "";
-        // Log.d("locale : "+locale);
         if (!locale.equals("zh_TW")) {
-           //   Log.d("search in EN");
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationzh_TW))
-                {
+            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++) {
+                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationzh_TW)) {
                     stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNameen();
-
-                    // Log.d("stationName: "+ stationName);
                     break;
                 }
             }
         }
         else{
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationzh_TW))
-                {
+            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++) {
+                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationzh_TW)) {
                     stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNametw();
-
-                    // Log.d("stationName: "+ stationName);
                     break;
                 }
             }
         }
-        // Log.d("stationName:  " + stationName);
         return stationName;
     }
 
@@ -507,52 +465,57 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
     public void getCurrentLocation() {
         Log.d("start of getLocation: "+System.currentTimeMillis());
 
-        gps = new GPSTracker(getActivity());
+        if (hasLocationPermission()) {
+            gps = new GPSTracker(getActivity());
+            // Check if GPS enabled
+            if(gps.canGetLocation()) {
 
-        // Check if GPS enabled
-        if(gps.canGetLocation()) {
+                double latitude = gps.getLatitude();
+                double longitude = gps.getLongitude();
 
-            double latitude = gps.getLatitude();
-            double longitude = gps.getLongitude();
-            // Log.d("latitude : " + latitude + " longitude :" + longitude);
-
-
-            HashMap<Integer, Integer> hashMap = new HashMap<Integer, Integer>();
-//            Log.d("MainActivity.allMetroStationObjs.size(): " + MainActivity.allMetroStationObjs.size());
-            double shortestDistance = 1000000;
-            int shortestID = 0;
-            int shortestIndex = 0;
-            for (int i = 0 ; i < MainActivity.allMetroStationObjs.size() ; i++)
-            {
-                double mLat = Double.parseDouble(MainActivity.allMetroStationObjs.get(i).getLat());
-                double mLon = Double.parseDouble(MainActivity.allMetroStationObjs.get(i).getLon());
-
-                double distance = gps2m(latitude,longitude, mLat, mLon);
-                if (distance < shortestDistance)
+                HashMap<Integer, Integer> hashMap = new HashMap<Integer, Integer>();
+                double shortestDistance = 1000000;
+                int shortestID = 0;
+                int shortestIndex = 0;
+                for (int i = 0 ; i < MainActivity.allMetroStationObjs.size() ; i++)
                 {
-                    shortestID = MainActivity.allMetroStationObjs.get(i).getId();
-                    shortestIndex = i;
-                    shortestDistance = distance;
+                    double mLat = Double.parseDouble(MainActivity.allMetroStationObjs.get(i).getLat());
+                    double mLon = Double.parseDouble(MainActivity.allMetroStationObjs.get(i).getLon());
+
+                    double distance = gps2m(latitude,longitude, mLat, mLon);
+                    if (distance < shortestDistance)
+                    {
+                        shortestID = MainActivity.allMetroStationObjs.get(i).getId();
+                        shortestIndex = i;
+                        shortestDistance = distance;
+                    }
+                    hashMap.put(MainActivity.allMetroStationObjs.get(i).getId(),(int)(distance));
                 }
-                // Log.d(MainActivity.allMetroStationObjs.get(i).getNametw() +" : "+distance);
-                hashMap.put(MainActivity.allMetroStationObjs.get(i).getId(),(int)(distance));
+                Log.d("shortestID : " + shortestID + " shortestIndex :" + shortestIndex + " shortestDistance :" + shortestDistance);
+                Log.d("end of getLocation: "+System.currentTimeMillis());
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.nearestStation)+ "\n" + MainActivity.allMetroStationObjs.get(shortestIndex).getNametw() + " " + MainActivity.allMetroStationObjs.get(shortestIndex).getNameen(), Toast.LENGTH_LONG).show();
+                myWebView.loadUrl("javascript:markNearStation('" + MainActivity.allMetroStationObjs.get(shortestIndex).getCustomid() + "')");
+            } else {
+                // Can't get location.
+                // GPS or netWork is not enabled.
+                // Ask user to enable GPS/network in settings.
+                gps.showSettingsAlert();
             }
-//            Log.d("shortestID : " + shortestID + " shortestIndex :" + shortestIndex + " shortestDistance :" + shortestDistance);
-           //  Log.d(MainActivity.allMetroStationObjs.get(shortestIndex).getNametw() + " " + shortestDistance);
-            Log.d("end of getLocation: "+System.currentTimeMillis());
-            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.nearestStation)+ "\n" + MainActivity.allMetroStationObjs.get(shortestIndex).getNametw() + " " + MainActivity.allMetroStationObjs.get(shortestIndex).getNameen(), Toast.LENGTH_LONG).show();
-            myWebView.loadUrl("javascript:markNearStation('" + MainActivity.allMetroStationObjs.get(shortestIndex).getCustomid() + "')");
-
-
         } else {
-            // Can't get location.
-            // GPS or netWork is not enabled.
-            // Ask user to enable GPS/network in settings.
-            // Dynamic Permission require
-            gps.showSettingsAlert();
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Snackbar.make(getView(), getString(R.string.permissionRequestExplanation), Snackbar.LENGTH_LONG)
+                        .setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                requestAccessFineLocationPermission();
+                            }
+                        }).show();
+            } else {
+                requestAccessFineLocationPermission();
+            }
         }
     }
-
 
     private double gps2m(double lat_a, double lng_a, double lat_b, double lng_b) {
         double radLat1 = (lat_a * Math.PI / 180.0);
@@ -567,32 +530,57 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
         return s;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getActivity().getMenuInflater().inflate(R.menu.main, menu);
-//
-//        return super.getActivity().onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.locale) {
-//            getCurrentLocation();
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // your code here, you can use newConfig.locale if you need to check the language
         // or just re-set all the labels to desired string resource
+    }
+
+
+    private boolean hasLocationPermission() {
+        boolean result = ContextCompat.checkSelfPermission(getActivity().getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        Log.d("permission result : "+result);
+        return result;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("onRequestPermissionsResult requestCode: "+requestCode+" ");
+
+        switch (requestCode) {
+
+            case REQUEST_CODE_ASK_ASSESS_FINE_LOCATION_PERMISSIONS:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getCurrentLocation();
+                } else {
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        Snackbar.make(getView(),
+                                getString(R.string.permissionEnableHint),
+                                Snackbar.LENGTH_LONG)
+                                .setAction(getString(R.string.permissionEnableSolution), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                                Uri.fromParts("package", getActivity().getBaseContext().getPackageName(), null));
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                    }
+                                }).show();
+                    }
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
+        }
+    }
+    private void requestAccessFineLocationPermission() {
+        // requests ASSESS_FINE_LOCATION permission
+        requestPermissions(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION
+        }, REQUEST_CODE_ASK_ASSESS_FINE_LOCATION_PERMISSIONS);
     }
 }

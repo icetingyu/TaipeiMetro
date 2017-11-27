@@ -18,12 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -48,11 +42,13 @@ public class StationDetailActivity extends Activity {
     private TextView stationNameEN;
     private TextView otherNumbers;
     private TextView additionalInfo;
+    private TextView errorTextView;
     private MetroStationObj currentMetroStation;
     private WebView mapView;
     private Handler javascriptRunningHandler = new Handler();
     private SharedPreferences mSP;
     private ProgressDialog progressBar;
+    private Util utils = new Util();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +63,22 @@ public class StationDetailActivity extends Activity {
         stationNameEN = (TextView) findViewById(R.id.stationNameEN);
         otherNumbers = (TextView) findViewById(R.id.otherNumbers);
         additionalInfo = (TextView) findViewById(R.id.additionalInfo);
+        errorTextView = (TextView) findViewById(R.id.error);
         progressBar = new ProgressDialog(StationDetailActivity.this);
-        progressBar.setMessage("Please wait Loading...");
-        progressBar.show();
+
         setup();
         backBtn = (ImageButton) findViewById(R.id.backBtn);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finishActivity();
+            }
+        });
+
+        errorTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setup();
             }
         });
 
@@ -180,9 +183,7 @@ public class StationDetailActivity extends Activity {
         // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // 什麼都不用寫
         } else {
-            // 什麼都不用寫
         }
     }
 
@@ -389,7 +390,18 @@ public class StationDetailActivity extends Activity {
         mapView.getSettings().setDomStorageEnabled(true);
         mapView.addJavascriptInterface(new JavaScriptInterface(), "JSInterface");
         mapView.setWebViewClient(new MyWebViewClient());
-        mapView.loadUrl("file:///android_asset/www/googlemap.html");
+
+        if (utils.isOnline(this)) {
+            Log.d("isOnline");
+            mapView.loadUrl("file:///android_asset/www/googlemap.html");
+            progressBar.setMessage("Please wait Loading...");
+            progressBar.show();
+            errorTextView.setVisibility(View.GONE);
+        } else {
+            Log.d("isOffline");
+
+            errorTextView.setVisibility(View.VISIBLE);
+        }
     }
 
 

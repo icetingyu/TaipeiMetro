@@ -16,6 +16,9 @@
     <string name="arrive">" to arrive."</string>
     <string name="intro">Much more friendly!</string>
     <string name="nearestStation">"Your Nearest MRT Station is -"</string>
-    <string name="locale">Locale</string>
+    <string name="location">Location</string>
     <string name="language">Language</string>
+    <string name="permissionRequestExplanation">Need Location Permission to find the nearest MRT station.</string>
+    <string name="permissionEnableHint">If you want to enable the permission.</string>
+    <string name="permissionEnableSolution">Go to App Setting to grant permission.</string>
 </resources>
