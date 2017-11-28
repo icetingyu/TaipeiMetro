@@ -4,16 +4,11 @@ package hsu.icesimon.taipeimetro;
  * Created by Simon Hsu on 15/3/28.
  */
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -22,15 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 //import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Locale;
 
 
 public class StationDetailActivity extends Activity {
@@ -57,7 +48,6 @@ public class StationDetailActivity extends Activity {
         mInflater = (LayoutInflater) getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         mSP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         locale = mSP.getString("locale", "");
-//        Log.d("locale in StationDetail : "+locale);
         mapView = (WebView) findViewById(R.id.mapView);
         stationNameTW = (TextView) findViewById(R.id.stationNameTW);
         stationNameEN = (TextView) findViewById(R.id.stationNameEN);
@@ -85,17 +75,15 @@ public class StationDetailActivity extends Activity {
         Intent intent = getIntent();
         currentStnId = intent.getIntExtra(MainActivity.CURRENTSTATION, 0);
 
-        for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-        {
-            if (MainActivity.allMetroStationObjs.get(i).getId() == currentStnId) {
-                currentMetroStation = MainActivity.allMetroStationObjs.get(i);
+        for (int i = 0; i < MainActivity.mrtStationInfo.size(); i++) {
+            if (MainActivity.mrtStationInfo.get(i).getId() == currentStnId) {
+                currentMetroStation = MainActivity.mrtStationInfo.get(i);
                 break;
             }
         }
 
         String[] stationNames = findStationNameArrayById(currentStnId);
-        if (stationNames == null)
-        {
+        if (stationNames == null) {
             stationNameTW.setText(currentMetroStation.getCustomid()+" "+currentMetroStation.getNametw());
         }
         else {
@@ -103,30 +91,24 @@ public class StationDetailActivity extends Activity {
             for (int i = 0; i < stationNames.length; i++)
             {
                 String stationOtherName = stationNames[i];
-                if (stationOtherName.startsWith("1"))
-                {
+                if (stationOtherName.startsWith("1")) {
                     stationOtherName = "<font color=\"#c38c32\">"+ stationOtherName + "</font>";
                 }
-                else if (stationOtherName.startsWith("2"))
-                {
+                else if (stationOtherName.startsWith("2")) {
                     stationOtherName = "<font color=\"#e2002e\">"+ stationOtherName + "</font>";
                 }
-                else if (stationOtherName.startsWith("3"))
-                {
+                else if (stationOtherName.startsWith("3")) {
                     stationOtherName = "<font color=\"#01865b\">"+ stationOtherName + "</font>";
                 }
-                else if (stationOtherName.startsWith("4"))
-                {
+                else if (stationOtherName.startsWith("4")) {
                     stationOtherName = "<font color=\"#f6b51d\">"+ stationOtherName + "</font>";
                 }
-                else if (stationOtherName.startsWith("5"))
-                {
+                else if (stationOtherName.startsWith("5")) {
                     stationOtherName = "<font color=\"#0070ba\">"+ stationOtherName + "</font>";
                 }
                 addOtherStationNames += stationOtherName;
 
-                if ( i < stationNames.length-1)
-                {
+                if ( i < stationNames.length-1) {
                     addOtherStationNames += "<font color=\"#777777\">"+ " / " + "</font>";
                 }
             }
@@ -198,189 +180,6 @@ public class StationDetailActivity extends Activity {
         overridePendingTransition(R.anim.in_from_left, R.anim.out_to_right);
     }
 
-    // Not use
-    private String findStationName(int stationId) {
-        String stationName = "";
-        for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-        {
-            if (MainActivity.allMetroStationObjs.get(i).getId() == stationId)
-            {
-                if (!locale.equals("zh_TW"))
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNameen();
-                }
-                else
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNametw();
-                }
-                // Log.d("stationName: "+ stationName);
-                break;
-            }
-        }
-        return stationName;
-    }
-
-    private String findStationName(String stationTW) {
-        String stationName = "";
-        if (!locale.equals("zh_TW")) {
-            // Log.d("search in EN");
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationTW))
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNameen();
-
-                    // Log.d("stationName: "+ stationName);
-                    break;
-                }
-            }
-        }
-        else{
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationTW))
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNametw();
-
-                    // Log.d("stationName: "+ stationName);
-                    break;
-                }
-            }
-        }
-        // Log.d("stationName:  "+stationName);
-        return stationName;
-    }
-
-    private String findLineName(int lineId) {
-        String lineEnglishName = "";
-        if (!locale.equals("zh_TW"))
-        {
-            switch (lineId)
-            {
-                case 1:
-                    lineEnglishName = "Wenhu Line";
-                    break;
-                case 2:
-                    lineEnglishName = "Tamsui-Xinyi Line";
-                    break;
-                case 3:
-                    lineEnglishName = "Songshan-Xindian Line";
-                    break;
-                case 4:
-                    lineEnglishName = "Zhonghe-Xinlu Line";
-                    break;
-                case 5:
-                    lineEnglishName = "Bannan Line";
-                    break;
-            }
-        }
-        else {
-            switch (lineId)
-            {
-                case 1:
-                    lineEnglishName = "文湖線";
-                    break;
-                case 2:
-                    lineEnglishName = "淡水信義線";
-                    break;
-                case 3:
-                    lineEnglishName = "松山新店線";
-                    break;
-                case 4:
-                    lineEnglishName = "中和新蘆線";
-                    break;
-                case 5:
-                    lineEnglishName = "板南線";
-                    break;
-            }
-        }
-        return lineEnglishName;
-    }
-
-    private String findTransferDirection(String direction) {
-        String transferDirection = "";
-        if (!locale.equals("zh_TW"))
-        {
-            if (direction.equals("往北投/往淡水"))
-            {
-                transferDirection = "To Beitou/ To Tamsui";
-            }
-            else if (direction.equals("往大安/往象山"))
-            {
-                transferDirection = "To Daan/ To Xiangshan";
-            }
-            else if (direction.equals("往南勢角"))
-            {
-                transferDirection = "To Daan/ To Xiangshan";
-
-            }
-            else if (direction.equals("往蘆洲"))
-            {
-                transferDirection = "To Luzhou";
-            }
-            else if (direction.equals("往迴龍"))
-            {
-                transferDirection = "To Huilong";
-            }
-            else if (direction.equals("往台電大樓/往新店"))
-            {
-                transferDirection = "To Taipower Building/ To Xindian";
-            }
-            else if (direction.equals("往新店"))
-            {
-                transferDirection = "To Xindian";
-            }
-            else if (direction.equals("往松山"))
-            {
-                transferDirection = "To SongShan";
-            }
-            else if (direction.equals("往南港展覽館"))
-            {
-                transferDirection = "To Taipei Nangang Exhibition Center";
-            }
-            else if (direction.equals("往動物園"))
-            {
-                transferDirection = "To Taipei Zoo";
-            }
-            else if (direction.equals("往亞東醫院/往永寧"))
-            {
-                transferDirection = "To Far Eastern Hospital/ To Yongning";
-            }
-            else if (direction.equals("往永寧"))
-            {
-                transferDirection = "To Yongning";
-            }
-            else if (direction.equals("往象山"))
-            {
-                transferDirection = "To Xiangshan";
-            }
-            else if (direction.equals("往淡水"))
-            {
-                transferDirection = "To Tamsui";
-            }
-            else if (direction.equals("往新北投"))
-            {
-                transferDirection = "To Xinbeitou";
-            }
-            else if (direction.equals("往七張"))
-            {
-                transferDirection = "To Qizhang";
-            }
-            else if (direction.equals("往北投"))
-            {
-                transferDirection = "To Beitou";
-            }
-            else if (direction.equals("往小碧潭"))
-            {
-                transferDirection = "To Xiaobitan";
-            }
-        }
-        else {
-            transferDirection = direction;
-        }
-        return transferDirection;
-    }
-
     private void setup() {
         mapView.requestFocus();
         mapView.getSettings().setJavaScriptEnabled(true);
@@ -399,7 +198,6 @@ public class StationDetailActivity extends Activity {
             errorTextView.setVisibility(View.GONE);
         } else {
             Log.d("isOffline");
-
             errorTextView.setVisibility(View.VISIBLE);
         }
     }
@@ -462,15 +260,13 @@ public class StationDetailActivity extends Activity {
 
     private String[] findStationNameArrayById(int id) {
         String[] stationNameArray = null;
-        for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
+        for (int i = 0; i < MainActivity.mrtStationInfo.size(); i++)
         {
-            if (MainActivity.allMetroStationObjs.get(i).getId() == id)
-            {
-                String customId = MainActivity.allMetroStationObjs.get(i).getCustomid();
+            if (MainActivity.mrtStationInfo.get(i).getId() == id) {
+                String customId = MainActivity.mrtStationInfo.get(i).getCustomid();
 
-                if (customId.startsWith("T"))
-                {
-                    stationNameArray = MainActivity.allMetroStationObjs.get(i).getOtherStations().split(",");
+                if (customId.startsWith("T")) {
+                    stationNameArray = MainActivity.mrtStationInfo.get(i).getOtherStations().split(",");
                 }
                 break;
             }

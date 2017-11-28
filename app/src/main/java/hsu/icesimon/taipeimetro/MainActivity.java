@@ -30,8 +30,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static ArrayList<MetroInfoObj> allMetroInfoObjs = new ArrayList<MetroInfoObj>();
-    public static ArrayList<MetroStationObj> allMetroStationObjs = new ArrayList<MetroStationObj>();
+    public static ArrayList<MetroRouteObj> metroRouteObjs = new ArrayList<MetroRouteObj>();
+    public static ArrayList<MetroStationObj> mrtStationInfo = new ArrayList<MetroStationObj>();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -91,12 +91,12 @@ public class MainActivity extends AppCompatActivity {
         new loadData("2").execute();
     }
 
-    private void readFile(String inFile)
+    private void readMetroRouteFile()
     {
         String tContents = "";
 
         try {
-            InputStream stream = getAssets().open(inFile);
+            InputStream stream = getAssets().open("TaipeiMetro_full.txt");
 
             int size = stream.available();
             byte[] buffer = new byte[size];
@@ -107,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
             // Handle exceptions here
         }
         Gson gson = new Gson();
-        MetroInfoObj[] readJson  = gson.fromJson(tContents, MetroInfoObj[].class);
-        allMetroInfoObjs = new ArrayList<MetroInfoObj>(Arrays.asList(readJson));
+        MetroRouteObj[] readJson  = gson.fromJson(tContents, MetroRouteObj[].class);
+        metroRouteObjs = new ArrayList<MetroRouteObj>(Arrays.asList(readJson));
+
     }
 
     private void readMetroStationInfoFile()
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Gson gson = new Gson();
         MetroStationObj[] readJson  = gson.fromJson(tContents, MetroStationObj[].class);
-        allMetroStationObjs = new ArrayList<MetroStationObj>(Arrays.asList(readJson));
+        mrtStationInfo = new ArrayList<MetroStationObj>(Arrays.asList(readJson));
     }
 
     class loadData extends AsyncTask<String, Void, String> {
@@ -138,13 +139,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected String doInBackground(String... urls) {
-            if (type.equals("1"))
-            {
+
+            if (type.equals("1")) {
                 readMetroStationInfoFile();
+            } else  {
+                readMetroRouteFile();
             }
-            else  {
-                readFile("TaipeiMetro_full.txt");
-            }
+
             return null;
         }
 

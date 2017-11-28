@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by Simon Hsu on 15/4/19.
  */
 
-public class MetroInfoObj {
+public class MetroRouteObj {
     int startStnId;
     int endStnId;
     String startStn;

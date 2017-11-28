@@ -49,6 +49,7 @@ public class TransferDetailActivity extends Activity {
     private int startStnId;
     private int endStnId;
     private String locale;
+    private Util mUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class TransferDetailActivity extends Activity {
         });
 
         Intent intent = getIntent();
+        mUtils = new Util();
         routes = intent.getStringExtra(MainActivity.ROUTEPLAN);
         time = intent.getStringExtra(MainActivity.ROUTETIME).replace("約","").replace(" 分鐘", "");
         startStnId = intent.getIntExtra(MainActivity.ROUTESTART, 0);
@@ -80,7 +82,6 @@ public class TransferDetailActivity extends Activity {
 
         String temptickets = intent.getStringExtra(MainActivity.ROUTETICKETS);
         Log.d("routes: " + routes);
-        String ticketText = "";
         try {
             JSONArray ticketArray = new JSONArray(temptickets);
             singleRidePrice.setText(getString(R.string.priceTag)+" "+ticketArray.get(0).toString().replace("元",""));
@@ -96,8 +97,7 @@ public class TransferDetailActivity extends Activity {
         String itemLine = "";
         String startPreLine = "";
 
-        for (int i = 0 ; i < routeData.length ; i++)
-        {
+        for (int i = 0 ; i < routeData.length ; i++) {
             String info = routeData[i];
             String currentLine = "";
             String transferLine = "";
@@ -105,65 +105,54 @@ public class TransferDetailActivity extends Activity {
             String middleText = "";
             String mDisplayText = "";
 
-            if (info.contains("搭乘"))
-            {
+            if (info.contains("搭乘")) {
                 int index = info.indexOf("搭乘");
                 String tempLine  = info.substring(index + 2, index + 3);
-                if (info.contains("新北投"))
-                {
+                if (info.contains("新北投")) {
                     itemLine = "2";
-                }
-                else if (info.contains("小碧潭")) {
+                } else if (info.contains("小碧潭")) {
                     itemLine = "3";
-                }
-                else {
+                } else {
                     if (!tempLine.equals("1") && !tempLine.equals("2") && !tempLine.equals("3") && !tempLine.equals("4") && !tempLine.equals("5"))
                     {
 
-                    }
-                    else
-                    {
+                    } else {
                         itemLine = info.substring(index+2,index+3);
                     }
                 }
                 startPreLine = itemLine;
                 // Log.d("itemLine : " + itemLine);
                 String[] split = info.split("（");
-                if (split.length > 0)
-                {
+                if (split.length > 0) {
                     String transferStationTW = split[0].split("搭乘")[0].trim();
-                    if (transferStationTW.indexOf("車站")!= -1)
-                    {
+                    if (transferStationTW.indexOf("車站")!= -1) {
                         Log.d("displayText before change : "+displayText);
-
                         displayText = transferStationTW;
                     }
                     else {
                         displayText = transferStationTW.replace("站","");
                     }
-                    String[] stations = findStationNameArrayById(startStnId);
-                    middleText = findTransferDirection(split[1].replace("）", "").trim());
+                    String[] stations = mUtils.findStationNameArrayById(startStnId);
+                    middleText = mUtils.findTransferDirection(split[1].replace("）", "").trim(),locale);
                     Log.d("搭乘MiddleText  :"+middleText);
                     if (stations == null) {
                         if (!locale.equals("zh_TW")) {
-                            mDisplayText = findStationName(startStnId) + "\n(" + getString(R.string.take) + " Line " + itemLine + " " + findLineName(Integer.parseInt(itemLine)) + ")";
+                            mDisplayText = mUtils.findStationName(startStnId,locale) + "\n(" + getString(R.string.take) + " Line " + itemLine + " " + mUtils.findLineName(Integer.parseInt(itemLine),locale) + ")";
                         } else {
-                            mDisplayText = findStationName(startStnId) + "\n(" + getString(R.string.take) + " " + itemLine + " 號" + findLineName(Integer.parseInt(itemLine)) + ")";
+                            mDisplayText = mUtils.findStationName(startStnId,locale) + "\n(" + getString(R.string.take) + " " + itemLine + " 號" + mUtils.findLineName(Integer.parseInt(itemLine),locale) + ")";
                         }
-
                     }
                     else {
-                        for (int k = 0 ; k < stations.length ; k++)
-                        {
+                        for (int k = 0 ; k < stations.length ; k++) {
                             String eachOtherStation = stations[k];
                             Log.d("eachOtherStation  :"+eachOtherStation);
 
                             if (eachOtherStation.substring(0,1).equals(startPreLine))
                             {
                                 if (!locale.equals("zh_TW")) {
-                                    mDisplayText =  eachOtherStation+ " "+findSimplyStationName(displayText) ;//+ "\n(" + getString(R.string.transfer) + " Line " + startPreLine + " " + findLineName(Integer.parseInt(itemLine)) + ")";
+                                    mDisplayText =  eachOtherStation+ " "+mUtils.findSimplyStationName(displayText,locale) ;//+ "\n(" + getString(R.string.transfer) + " Line " + startPreLine + " " + mUtils.findLineName(Integer.parseInt(itemLine)) + ")";
                                 } else {
-                                    mDisplayText =  eachOtherStation+ " "+findSimplyStationName(displayText) ;//+ "\n(" + getString(R.string.transfer) + " " + startPreLine + " 號" + findLineName(Integer.parseInt(itemLine)) + ")";
+                                    mDisplayText =  eachOtherStation+ " "+mUtils.findSimplyStationName(displayText,locale) ;//+ "\n(" + getString(R.string.transfer) + " " + startPreLine + " 號" + mUtils.findLineName(Integer.parseInt(itemLine)) + ")";
                                 }
 //                                RowItem itemDetail = new RowItem(1,mDisplayText, startPreLine,"");
 //
@@ -217,13 +206,13 @@ public class TransferDetailActivity extends Activity {
                     Log.d("displayText before change : "+displayText);
 
                     // Check if the station is intersection
-                    String[] stations = findStationNameArray(displayText);
-                    int oriStationID = findStationIdByName(displayText);
+                    String[] stations = mUtils.findStationNameArray(displayText);
+                    int oriStationID = mUtils.findStationIdByName(displayText);
                     if (stations == null) {
                         if (!locale.equals("zh_TW")) {
-                            mDisplayText = findStationName(displayText) + "\n(" + getString(R.string.transfer) + " Line " + itemLine + " " + findLineName(Integer.parseInt(itemLine)) + ")";
+                            mDisplayText = mUtils.findStationName(displayText,locale) + "\n(" + getString(R.string.transfer) + " Line " + itemLine + " " + mUtils.findLineName(Integer.parseInt(itemLine),locale) + ")";
                         } else {
-                            mDisplayText = findStationName(displayText) + "\n(" + getString(R.string.transfer) + " " + itemLine + " 號" + findLineName(Integer.parseInt(itemLine)) + ")";
+                            mDisplayText = mUtils.findStationName(displayText,locale) + "\n(" + getString(R.string.transfer) + " " + itemLine + " 號" + mUtils.findLineName(Integer.parseInt(itemLine),locale) + ")";
                         }
                         if (middleText.equals("往小碧潭"))
                         {
@@ -233,7 +222,7 @@ public class TransferDetailActivity extends Activity {
                         {
                             itemLine = 2+"";
                         }
-                        middleText = findTransferDirection(split[1].replace("）","").trim());
+                        middleText = mUtils.findTransferDirection(split[1].replace("）","").trim(),locale);
 
                         RowItem itemDetail = new RowItem(0,mDisplayText, itemLine, oriStationID+"");
                         RowItem itemMiddle = new RowItem(1,middleText, itemLine, "");
@@ -252,9 +241,9 @@ public class TransferDetailActivity extends Activity {
                             if (eachOtherStation.substring(0,1).equals(startPreLine))
                             {
                                 if (!locale.equals("zh_TW")) {
-                                    mDisplayText =  eachOtherStation+ " "+findSimplyStationName(displayText) ;//+ "\n(" + getString(R.string.transfer) + " Line " + startPreLine + " " + findLineName(Integer.parseInt(itemLine)) + ")";
+                                    mDisplayText =  eachOtherStation+ " "+mUtils.findSimplyStationName(displayText,locale) ;//+ "\n(" + getString(R.string.transfer) + " Line " + startPreLine + " " + mUtils.findLineName(Integer.parseInt(itemLine)) + ")";
                                 } else {
-                                    mDisplayText =  eachOtherStation+ " "+findSimplyStationName(displayText) ;//+ "\n(" + getString(R.string.transfer) + " " + startPreLine + " 號" + findLineName(Integer.parseInt(itemLine)) + ")";
+                                    mDisplayText =  eachOtherStation+ " "+mUtils.findSimplyStationName(displayText,locale) ;//+ "\n(" + getString(R.string.transfer) + " " + startPreLine + " 號" + mUtils.findLineName(Integer.parseInt(itemLine)) + ")";
                                 }
                                 RowItem itemDetail = new RowItem(3,mDisplayText, startPreLine, oriStationID+"");
 
@@ -267,9 +256,9 @@ public class TransferDetailActivity extends Activity {
 
                         // add current transfer station
                         if (!locale.equals("zh_TW")) {
-                            mDisplayText = findStationName(displayText);// + "\n(" + getString(R.string.transfer) + " Line " + itemLine + " " + findLineName(Integer.parseInt(itemLine)) + ")";
+                            mDisplayText = mUtils.findStationName(displayText,locale);// + "\n(" + getString(R.string.transfer) + " Line " + itemLine + " " + mUtils.findLineName(Integer.parseInt(itemLine)) + ")";
                         } else {
-                            mDisplayText = findStationName(displayText);// + "\n(" + getString(R.string.transfer) + " " + itemLine + " 號" + findLineName(Integer.parseInt(itemLine)) + ")";
+                            mDisplayText = mUtils.findStationName(displayText,locale);// + "\n(" + getString(R.string.transfer) + " " + itemLine + " 號" + mUtils.findLineName(Integer.parseInt(itemLine)) + ")";
                         }
                         if (middleText.equals("往小碧潭"))
                         {
@@ -291,42 +280,36 @@ public class TransferDetailActivity extends Activity {
                             String eachOtherStation = stations[k];
                             Log.d("eachOtherStation  :"+eachOtherStation);
 
-                            if (eachOtherStation.substring(0,1).equals(itemLine))
-                            {
+                            if (eachOtherStation.substring(0,1).equals(itemLine)) {
                                 String transferStringEn = "";
                                 String transferStringTw = "";
 
-                                if (!itemLine.equals("1") && !itemLine.equals("2") &&!itemLine.equals("3") &&!itemLine.equals("4") &&!itemLine.equals("5"))
-                                {
-                                    transferStringEn = "\n(" + getString(R.string.transfer) + " Line " + startPreLine + " " + findLineName(Integer.parseInt(itemLine)) + ")";
-                                    transferStringTw = "\n"  + getString(R.string.transfer) + " " + startPreLine + " 號" + findLineName(Integer.parseInt(itemLine)) + ")";
+                                if (!itemLine.equals("1") && !itemLine.equals("2") &&!itemLine.equals("3") &&!itemLine.equals("4") &&!itemLine.equals("5")) {
+                                    transferStringEn = "\n(" + getString(R.string.transfer) + " Line " + startPreLine + " " + mUtils.findLineName(Integer.parseInt(itemLine),locale) + ")";
+                                    transferStringTw = "\n"  + getString(R.string.transfer) + " " + startPreLine + " 號" + mUtils.findLineName(Integer.parseInt(itemLine),locale) + ")";
                                 }
 
                                 if (!locale.equals("zh_TW")) {
-
-                                    mDisplayText = eachOtherStation+ " "+findSimplyStationName(displayText) + transferStringEn;
+                                    mDisplayText = eachOtherStation+ " "+mUtils.findSimplyStationName(displayText,locale) + transferStringEn;
                                 } else {
-                                    mDisplayText = eachOtherStation+ " "+findSimplyStationName(displayText) + transferStringTw;
+                                    mDisplayText = eachOtherStation+ " "+mUtils.findSimplyStationName(displayText,locale) + transferStringTw;
                                 }
                                 Log.d("sfdsdfsdfd middleText : "+middleText);
 
-                                if (middleText.equals("往小碧潭"))
-                                {
+                                if (middleText.equals("往小碧潭")) {
                                     itemLine = 3+"";
                                 }
-                                else if  (middleText.equals("往新北投"))
-                                {
+                                else if (middleText.equals("往新北投")) {
                                     itemLine = 2+"";
-                                } else
-                                {
+                                } else {
                                     itemLine = startPreLine;
                                 }
                                 Log.d("sfdsdfsdfd : "+itemLine);
-                                middleText = findTransferDirection(split[1].replace("）","").trim());
+                                middleText = mUtils.findTransferDirection(split[1].replace("）","").trim(),locale);
 
                                 itemDetail = new RowItem(0,mDisplayText, itemLine, oriStationID+"");
 
-                                middleText = findTransferDirection(split[1].replace("）","").trim());
+                                middleText = mUtils.findTransferDirection(split[1].replace("）","").trim(),locale);
                                 RowItem itemMiddle = new RowItem(1,middleText, itemLine , "");
                                 Log.d("final itemMiddle text : "+middleText);
                                 rowItems.add(itemDetail);
@@ -342,43 +325,34 @@ public class TransferDetailActivity extends Activity {
 
             }
             else {
-                displayText = findStationName(endStnId);
-//                Log.d("End station :"+displayText);
-                String[] stations = findStationNameArrayById(endStnId);
+                String[] stations = mUtils.findStationNameArrayById(endStnId);
 
                 if (stations == null) {
                     if (!locale.equals("zh_TW")) {
-                        if (!itemLine.equals("（"))
-                        {
-                            mDisplayText = findStationName(endStnId) + "\n(" + getString(R.string.take) + " Line " + itemLine + " " + findLineName(Integer.parseInt(itemLine)) + ")";
-                        }
-                        else
-                        {
-                            mDisplayText = findStationName(endStnId);
+                        if (!itemLine.equals("（")) {
+                            mDisplayText = mUtils.findStationName(endStnId,locale) + "\n(" + getString(R.string.take) + " Line " + itemLine + " " + mUtils.findLineName(Integer.parseInt(itemLine),locale) + ")";
+                        } else {
+                            mDisplayText = mUtils.findStationName(endStnId,locale);
                         }
                     } else {
                         if (!itemLine.equals("（")) {
-                            mDisplayText = findStationName(endStnId) + "\n(" + getString(R.string.take) + " " + itemLine + " 號" + findLineName(Integer.parseInt(itemLine)) + ")";
-                        }
-                        else
-                        {
-                            mDisplayText = findStationName(endStnId);
+                            mDisplayText = mUtils.findStationName(endStnId,locale) + "\n(" + getString(R.string.take) + " " + itemLine + " 號" + mUtils.findLineName(Integer.parseInt(itemLine),locale) + ")";
+                        } else {
+                            mDisplayText = mUtils.findStationName(endStnId,locale);
                         }
                     }
 
                 }
                 else {
-                    for (int k = 0 ; k < stations.length ; k++)
-                    {
+                    for (int k = 0 ; k < stations.length ; k++) {
                         String eachOtherStation = stations[k];
                         Log.d("eachOtherStation  :"+eachOtherStation);
 
-                        if (eachOtherStation.substring(0,1).equals(startPreLine))
-                        {
+                        if (eachOtherStation.substring(0,1).equals(startPreLine)) {
                             if (!locale.equals("zh_TW")) {
-                                mDisplayText = eachOtherStation + " " + findSimplyStationNameById(endStnId) ;//+ "\n(" + getString(R.string.transfer) + " Line " + startPreLine + " " + findLineName(Integer.parseInt(itemLine)) + ")";
+                                mDisplayText = eachOtherStation + " " + mUtils.findSimplyStationNameById(endStnId,locale) ;//+ "\n(" + getString(R.string.transfer) + " Line " + startPreLine + " " + mUtils.findLineName(Integer.parseInt(itemLine)) + ")";
                             } else {
-                                mDisplayText = eachOtherStation + " " + findSimplyStationNameById(endStnId);//+ "\n(" + getString(R.string.transfer) + " " + startPreLine + " 號" + findLineName(Integer.parseInt(itemLine)) + ")";
+                                mDisplayText = eachOtherStation + " " + mUtils.findSimplyStationNameById(endStnId,locale);//+ "\n(" + getString(R.string.transfer) + " " + startPreLine + " 號" + mUtils.findLineName(Integer.parseInt(itemLine)) + ")";
                             }
                             break;
                         }
@@ -444,340 +418,5 @@ public class TransferDetailActivity extends Activity {
     private void finishActivity() {
         this.finish();
         overridePendingTransition(R.anim.in_from_left, R.anim.out_to_right);
-    }
-
-    private double disToPriceDefault(int dis) {
-        if (dis <= 5000)
-        {
-            return 20;
-        }
-        if (dis <= 23000)
-        {
-            return 25 + Math.floor((dis - 5000) / 3000) * 5;
-        }
-        return 55 + Math.floor((dis - 23000) / 4000) * 5;
-    }
-
-    private String findStationName(int stationId) {
-        String stationName = "";
-        for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-        {
-            if (MainActivity.allMetroStationObjs.get(i).getId() == stationId)
-            {
-                if (!locale.equals("zh_TW"))
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNameen();
-                }
-                else
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNametw()  +"\n" +MainActivity.allMetroStationObjs.get(i).getNameen();;
-                }
-                // Log.d("stationName: "+ stationName);
-                break;
-            }
-        }
-        return stationName;
-    }
-
-    private String findStationName(String stationTW) {
-        Log.d("input : "+stationTW);
-        String stationName = "";
-        if (!locale.equals("zh_TW")) {
-            // Log.d("search in EN");
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationTW))
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNameen();
-
-                    // Log.d("stationName: "+ stationName);
-                    break;
-                }
-            }
-        }
-        else{
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationTW))
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNametw() + "\n" + MainActivity.allMetroStationObjs.get(i).getNameen();
-
-                    // Log.d("stationName: "+ stationName);
-                    break;
-                }
-            }
-        }
-        Log.d("stationName:  "+stationName);
-        return stationName;
-    }
-
-    private String findLineName(int lineId) {
-        String lineEnglishName = "";
-        if (!locale.equals("zh_TW"))
-        {
-            switch (lineId)
-            {
-                case 1:
-                    lineEnglishName = "Wenhu Line";
-                    break;
-                case 2:
-                    lineEnglishName = "Tamsui-Xinyi Line";
-                    break;
-                case 3:
-                    lineEnglishName = "Songshan-Xindian Line";
-                    break;
-                case 4:
-                    lineEnglishName = "Zhonghe-Xinlu Line";
-                    break;
-                case 5:
-                    lineEnglishName = "Bannan Line";
-                    break;
-            }
-        }
-        else {
-            switch (lineId)
-            {
-                case 1:
-                    lineEnglishName = "文湖線";
-                    break;
-                case 2:
-                    lineEnglishName = "淡水信義線";
-                    break;
-                case 3:
-                    lineEnglishName = "松山新店線";
-                    break;
-                case 4:
-                    lineEnglishName = "中和新蘆線";
-                    break;
-                case 5:
-                    lineEnglishName = "板南線";
-                    break;
-            }
-        }
-        return lineEnglishName;
-    }
-
-    private String findTransferDirection(String direction) {
-        String transferDirection = "";
-        if (direction.equals("往北投/往淡水"))
-        {
-            transferDirection = "To Beitou / To Tamsui";
-        }
-        else if (direction.equals("往大安/往象山"))
-        {
-            transferDirection = "To Daan / To Xiangshan";
-        }
-        else if (direction.equals("往南勢角"))
-        {
-            transferDirection = "To Daan/ To Xiangshan";
-        }
-        else if (direction.equals("往蘆洲"))
-        {
-            transferDirection = "To Luzhou";
-        }
-        else if (direction.equals("往迴龍"))
-        {
-            transferDirection = "To Huilong";
-        }
-        else if (direction.equals("往台電大樓/往新店"))
-        {
-            transferDirection = "To Taipower Building / To Xindian";
-        }
-        else if (direction.equals("往新店"))
-        {
-            transferDirection = "To Xindian";
-        }
-        else if (direction.equals("往松山"))
-        {
-            transferDirection = "To SongShan";
-        }
-        else if (direction.equals("往南港展覽館"))
-        {
-            transferDirection = "To Taipei Nangang Exhibition Center";
-        }
-        else if (direction.equals("往動物園"))
-        {
-            transferDirection = "To Taipei Zoo";
-        }
-        else if (direction.equals("往亞東醫院/往永寧"))
-        {
-            transferDirection = "To Far Eastern Hospital / To Yongning";
-        }
-        else if (direction.equals("往永寧"))
-        {
-            transferDirection = "To Yongning";
-        }
-        else if (direction.equals("往象山"))
-        {
-            transferDirection = "To Xiangshan";
-        }
-        else if (direction.equals("往淡水"))
-        {
-            transferDirection = "To Tamsui";
-        }
-        else if (direction.equals("往新北投"))
-        {
-            transferDirection = "To Xinbeitou";
-        }
-        else if (direction.equals("往七張"))
-        {
-            transferDirection = "To Qizhang";
-        }
-        else if (direction.equals("往北投"))
-        {
-            transferDirection = "To Beitou";
-        }
-        else if (direction.equals("往小碧潭"))
-        {
-            transferDirection = "To Xiaobitan";
-        }
-        else if (direction.equals("往迴龍/往蘆洲"))
-        {
-            transferDirection = "To Huilong / Luzhou";
-        }
-        if (!locale.equals("zh_TW"))
-        {
-            return transferDirection;
-        }
-        else {
-            transferDirection = direction + "\n" + transferDirection;
-        }
-        return transferDirection;
-    }
-
-    private String[] findStationNameArray(String stationTW) {
-        String[] stationNameArray = null;
-        for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-        {
-            if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationTW))
-            {
-                String customId = MainActivity.allMetroStationObjs.get(i).getCustomid();
-                // intersection
-//                Log.d("customId :"+customId);
-//                Log.d("customId2 :"+MainActivity.allMetroStationObjs.get(i).getOtherStations());
-
-                if (customId.startsWith("T"))
-                {
-                    stationNameArray = MainActivity.allMetroStationObjs.get(i).getOtherStations().split(",");
-                }
-                break;
-            }
-        }
-        return stationNameArray;
-    }
-
-    private String[] findStationNameArrayById(int id) {
-        String[] stationNameArray = null;
-        for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-        {
-            if (MainActivity.allMetroStationObjs.get(i).getId() == id)
-            {
-                String customId = MainActivity.allMetroStationObjs.get(i).getCustomid();
-                // intersection
-//                Log.d("customId :"+customId);
-//                Log.d("customId2 :"+MainActivity.allMetroStationObjs.get(i).getOtherStations());
-
-                if (customId.startsWith("T"))
-                {
-                    stationNameArray = MainActivity.allMetroStationObjs.get(i).getOtherStations().split(",");
-                }
-                break;
-            }
-        }
-        return stationNameArray;
-    }
-
-    private String findStationCustomId(int id) {
-        String stationNameCustomId = null;
-        for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-        {
-            if (MainActivity.allMetroStationObjs.get(i).getId() == id)
-            {
-                stationNameCustomId= MainActivity.allMetroStationObjs.get(i).getCustomid();
-                break;
-            }
-        }
-        return stationNameCustomId;
-    }
-
-    private String findSimplyStationName(String stationTW) {
-//        Log.d("input : "+stationTW);
-        String stationName = "";
-        if (!locale.equals("zh_TW")) {
-            // Log.d("search in EN");
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationTW))
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getNameen();
-
-                    // Log.d("stationName: "+ stationName);
-                    break;
-                }
-            }
-        }
-        else{
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationTW))
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getNametw() +"\n" +MainActivity.allMetroStationObjs.get(i).getNameen();
-
-                    // Log.d("stationName: "+ stationName);
-                    break;
-                }
-            }
-        }
-//        Log.d("stationName:  "+stationName);
-        return stationName;
-    }
-
-    private String findSimplyStationNameById(int id) {
-//        Log.d("input : "+id);
-        String stationName = "";
-        if (!locale.equals("zh_TW")) {
-            // Log.d("search in EN");
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getId() == id)
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getNameen();
-
-                     Log.d("stationName: "+ stationName);
-                    break;
-                }
-            }
-        }
-        else{
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-            {
-                if (MainActivity.allMetroStationObjs.get(i).getId() == id)
-                {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getNametw() + "\n" + MainActivity.allMetroStationObjs.get(i).getNameen();
-
-                    // Log.d("stationName: "+ stationName);
-                    break;
-                }
-            }
-        }
-        Log.d("stationName:  "+stationName);
-        return stationName;
-    }
-
-    private int findStationIdByName(String stationTW) {
-//        Log.d("input : "+stationTW);
-        int stationId = 0;
-        for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++)
-        {
-            if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationTW))
-            {
-                stationId = MainActivity.allMetroStationObjs.get(i).getId();
-
-                // Log.d("stationName: "+ stationName);
-                break;
-            }
-        }
-//        Log.d("stationName:  "+stationId);
-        return stationId;
     }
 }

@@ -79,6 +79,7 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
     private SharedPreferences mSP;
     private String locale2;
     private final double EARTH_RADIUS = 6378137.0;
+    private Util mUtils;
 
     private static final int REQUEST_CODE_ASK_ASSESS_FINE_LOCATION_PERMISSIONS = 101;
 
@@ -112,6 +113,8 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
         } else {
             myLocale = Locale.TRADITIONAL_CHINESE;
         }
+        mUtils = new Util();
+
         Resources res = getActivity().getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
@@ -149,13 +152,11 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (arrow.getRotation() == 180)
-                {
+                if (arrow.getRotation() == 180) {
                     arrow.setRotation(0);
 
                 }
-                else
-                {
+                else {
                     arrow.setRotation(180);
                 }
             }
@@ -275,7 +276,7 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                             guideBar.setVisibility(View.VISIBLE);
                             startStation.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
-                            String parsedStartStn = findStationName(startStn);
+                            String parsedStartStn = mUtils.findStationName(startStn, locale);
                             if (!locale.equals("zh_TW")) {
                                 if (parsedStartStn.length() > 11) {
                                     startStation.setTextSize(15);
@@ -301,7 +302,7 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                         if (!endStn.equals("null")) {
                             realTimeCalcualte();
                             endStation.setVisibility(View.VISIBLE);
-                            String parsedStartStn = findStationName(endStn);
+                            String parsedStartStn = mUtils.findStationName(endStn,locale);
 
                             if (!locale.equals("zh_TW")) {
                                 if (parsedStartStn.length() > 10) {
@@ -404,22 +405,22 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
             String startStntw = selectPair.getString("StartChs");
             String endStnzh_TW = selectPair.getString("EndChs");
 
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++) {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(startStntw)) {
-                    startStnId = MainActivity.allMetroStationObjs.get(i).getId();
+            for (int i = 0; i < MainActivity.mrtStationInfo.size(); i++) {
+                if (MainActivity.mrtStationInfo.get(i).getNametw().equals(startStntw)) {
+                    startStnId = MainActivity.mrtStationInfo.get(i).getId();
                     break;
                 }
             }
 
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++) {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(endStnzh_TW)) {
-                    endStnId = MainActivity.allMetroStationObjs.get(i).getId();
+            for (int i = 0; i < MainActivity.mrtStationInfo.size(); i++) {
+                if (MainActivity.mrtStationInfo.get(i).getNametw().equals(endStnzh_TW)) {
+                    endStnId = MainActivity.mrtStationInfo.get(i).getId();
                     break;
                 }
             }
 
-            for (int i = 0 ; i < MainActivity.allMetroInfoObjs.size(); i++) {
-                MetroInfoObj obj = MainActivity.allMetroInfoObjs.get(i);
+            for (int i = 0; i < MainActivity.metroRouteObjs.size(); i++) {
+                MetroRouteObj obj = MainActivity.metroRouteObjs.get(i);
                 if (obj.getStartStnId() ==  startStnId && obj.getEndStnId() == endStnId) {
                     routeGuide = obj.getTransferInfo();
                     timeCost = obj.getTimeCost();
@@ -439,28 +440,6 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
 
     }
 
-    private String findStationName(String stationzh_TW) {
-        String stationName = "";
-        if (!locale.equals("zh_TW")) {
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++) {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationzh_TW)) {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNameen();
-                    break;
-                }
-            }
-        }
-        else{
-            for (int i = 0; i < MainActivity.allMetroStationObjs.size(); i++) {
-                if (MainActivity.allMetroStationObjs.get(i).getNametw().equals(stationzh_TW)) {
-                    stationName = MainActivity.allMetroStationObjs.get(i).getCustomid()+" "+MainActivity.allMetroStationObjs.get(i).getNametw();
-                    break;
-                }
-            }
-        }
-        return stationName;
-    }
-
-
     public void getCurrentLocation() {
         Log.d("start of getLocation: "+System.currentTimeMillis());
 
@@ -476,24 +455,25 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                 double shortestDistance = 1000000;
                 int shortestID = 0;
                 int shortestIndex = 0;
-                for (int i = 0 ; i < MainActivity.allMetroStationObjs.size() ; i++)
+
+                for (int i = 0; i < MainActivity.mrtStationInfo.size() ; i++)
                 {
-                    double mLat = Double.parseDouble(MainActivity.allMetroStationObjs.get(i).getLat());
-                    double mLon = Double.parseDouble(MainActivity.allMetroStationObjs.get(i).getLon());
+                    double mLat = Double.parseDouble(MainActivity.mrtStationInfo.get(i).getLat());
+                    double mLon = Double.parseDouble(MainActivity.mrtStationInfo.get(i).getLon());
 
                     double distance = gps2m(latitude,longitude, mLat, mLon);
                     if (distance < shortestDistance)
                     {
-                        shortestID = MainActivity.allMetroStationObjs.get(i).getId();
+                        shortestID = MainActivity.mrtStationInfo.get(i).getId();
                         shortestIndex = i;
                         shortestDistance = distance;
                     }
-                    hashMap.put(MainActivity.allMetroStationObjs.get(i).getId(),(int)(distance));
+                    hashMap.put(MainActivity.mrtStationInfo.get(i).getId(),(int)(distance));
                 }
                 Log.d("shortestID : " + shortestID + " shortestIndex :" + shortestIndex + " shortestDistance :" + shortestDistance);
                 Log.d("end of getLocation: "+System.currentTimeMillis());
-                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.nearestStation)+ "\n" + MainActivity.allMetroStationObjs.get(shortestIndex).getNametw() + " " + MainActivity.allMetroStationObjs.get(shortestIndex).getNameen(), Toast.LENGTH_LONG).show();
-                myWebView.loadUrl("javascript:markNearStation('" + MainActivity.allMetroStationObjs.get(shortestIndex).getCustomid() + "')");
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.nearestStation)+ "\n" + MainActivity.mrtStationInfo.get(shortestIndex).getNametw() + " " + MainActivity.mrtStationInfo.get(shortestIndex).getNameen(), Toast.LENGTH_LONG).show();
+                myWebView.loadUrl("javascript:markNearStation('" + MainActivity.mrtStationInfo.get(shortestIndex).getCustomid() + "')");
             } else {
                 // Can't get location.
                 // GPS or netWork is not enabled.
