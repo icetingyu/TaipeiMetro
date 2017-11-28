@@ -1,13 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "26.0.2"
-
+    compileSdkVersion 26
     defaultConfig {
         applicationId "hsu.icesimon.taipeimetro"
         minSdkVersion 21
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 20
         versionName "2.0"
     }
@@ -21,8 +19,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:design:23.1.1'
-
-
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    compile 'com.airbnb.android:lottie:2.3.0'
 }

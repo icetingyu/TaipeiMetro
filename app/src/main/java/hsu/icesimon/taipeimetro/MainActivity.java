@@ -13,7 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     public static ArrayList<MetroInfoObj> allMetroInfoObjs = new ArrayList<MetroInfoObj>();
     public static ArrayList<MetroStationObj> allMetroStationObjs = new ArrayList<MetroStationObj>();

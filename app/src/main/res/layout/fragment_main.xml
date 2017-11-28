@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity$PlaceholderFragment">
 
     <WebView
@@ -109,7 +110,7 @@
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:background="#FBB917">
+        android:background="@color/background">
         <TextView
             android:id="@+id/splashName"
             android:layout_width="wrap_content"
@@ -119,6 +120,7 @@
             android:textSize="40sp"
             android:layout_centerHorizontal="true"/>
         <TextView
+            android:id="@+id/desc"
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,5 +129,14 @@
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:layout_centerHorizontal="true"/>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation_view"
+            android:layout_below="@id/desc"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerHorizontal="true"
+            app:lottie_fileName="animation-w1080-h1080.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true" />
     </RelativeLayout>
 </RelativeLayout>

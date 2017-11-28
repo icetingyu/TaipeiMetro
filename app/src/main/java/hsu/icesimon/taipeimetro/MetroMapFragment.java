@@ -21,7 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -121,7 +121,7 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
 
         mTitle = getResources().getString(R.string.app_name);
         Log.d("mTitle:  "+mTitle);
-        actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setTitle(mTitle);
         actionBar.hide();
