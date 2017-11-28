@@ -174,8 +174,8 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                 intent.putExtra(MainActivity.ROUTESTART, realTimeObj.getStartStnId());
                 intent.putExtra(MainActivity.ROUTEEND, realTimeObj.getEndStnId());
 
-                ((MainActivity)getActivity()).startActivityForResult(intent, Activity.RESULT_OK);
-                ((MainActivity)getActivity()).overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
+                getActivity().startActivityForResult(intent, Activity.RESULT_OK);
+                getActivity().overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             }
         });
 
@@ -185,8 +185,8 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                 realTimeCalcualte();
                 Intent intent = new Intent(getActivity(), StationDetailActivity.class);
                 intent.putExtra(MainActivity.CURRENTSTATION, realTimeObj.getStartStnId());
-                ((MainActivity)getActivity()).startActivityForResult(intent, Activity.RESULT_OK);
-                ((MainActivity)getActivity()).overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
+                getActivity().startActivityForResult(intent, Activity.RESULT_OK);
+                getActivity().overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             }
         });
 
@@ -224,7 +224,6 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            // Log.d("onPageFinished : " + System.currentTimeMillis());
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.show();
             myWebView.postDelayed(new Runnable() {
