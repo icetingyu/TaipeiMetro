@@ -135,7 +135,7 @@
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:layout_centerHorizontal="true"
-            app:lottie_fileName="animation-w1080-h1080.json"
+            app:lottie_fileName="loading.json"
             app:lottie_loop="true"
             app:lottie_autoPlay="true" />
     </RelativeLayout>
