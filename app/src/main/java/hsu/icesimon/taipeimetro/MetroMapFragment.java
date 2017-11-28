@@ -419,15 +419,39 @@ public class MetroMapFragment extends android.support.v4.app.Fragment {
                 }
             }
 
-            for (int i = 0; i < MainActivity.metroRouteObjs.size(); i++) {
-                MetroRouteObj obj = MainActivity.metroRouteObjs.get(i);
-                if (obj.getStartStnId() ==  startStnId && obj.getEndStnId() == endStnId) {
+            Gson gson = new Gson();
+            for (int i = 0; i < MainActivity.rawData.size(); i++) {
+                // target string = "endStnId":7,"startStnId":9
+                String target = "\"endStnId\":"+endStnId+",\"startStnId\":"+startStnId;
+                String data = MainActivity.rawData.get(i);
+                if (data.contains(target)) {
+                    Log.d("target: "+target);
+                    Log.d("data: "+data);
+                    MetroRouteObj obj = gson.fromJson(data, MetroRouteObj.class);
                     routeGuide = obj.getTransferInfo();
                     timeCost = obj.getTimeCost();
                     tickets = obj.getTickets();
                     break;
                 }
+//                MetroRouteObj obj = MainActivity.metroRouteObjs.get(i);
+//                if (obj.getStartStnId() ==  startStnId && obj.getEndStnId() == endStnId) {
+//
+//                }
             }
+            Log.d("routeGuide: "+routeGuide);
+            Log.d("timeCost: "+timeCost);
+            Log.d("tickets: "+tickets);
+
+
+//            for (int i = 0; i < MainActivity.metroRouteObjs.size(); i++) {
+//                MetroRouteObj obj = MainActivity.metroRouteObjs.get(i);
+//                if (obj.getStartStnId() ==  startStnId && obj.getEndStnId() == endStnId) {
+//                    routeGuide = obj.getTransferInfo();
+//                    timeCost = obj.getTimeCost();
+//                    tickets = obj.getTickets();
+//                    break;
+//                }
+//            }
 
         } catch (JSONException e) {
             e.printStackTrace();

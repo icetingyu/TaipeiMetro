@@ -20,8 +20,10 @@ import android.view.MenuItem;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static ArrayList<MetroRouteObj> metroRouteObjs = new ArrayList<MetroRouteObj>();
     public static ArrayList<MetroStationObj> mrtStationInfo = new ArrayList<MetroStationObj>();
+    public static ArrayList<String> rawData = new ArrayList<String>();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -45,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     public static String ROUTESTART = "routestart";
     public static String ROUTEEND = "routeend";
     private SharedPreferences mSP;
-
     public static String CURRENTSTATION = "currentstation";
 
     @Override
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         String tContents = "";
 
         try {
-            InputStream stream = getAssets().open("TaipeiMetro_full.txt");
+            InputStream stream = getAssets().open("TaipeiMetro_ori.txt");
 
             int size = stream.available();
             byte[] buffer = new byte[size];
@@ -109,6 +111,41 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         MetroRouteObj[] readJson  = gson.fromJson(tContents, MetroRouteObj[].class);
         metroRouteObjs = new ArrayList<MetroRouteObj>(Arrays.asList(readJson));
+
+    }
+
+    private void readMetroRouteFileNew()
+    {
+        Log.d("Start read Metro Route : "+System.currentTimeMillis());
+        InputStream stream = null;
+        InputStreamReader isr = null;
+        BufferedReader input = null;
+        rawData.clear();
+        try {
+            stream = getAssets().open("TaipeiMetro.txt");
+            isr = new InputStreamReader(stream);
+            input = new BufferedReader(isr);
+            String line = "";
+            while ((line = input.readLine()) != null) {
+                rawData.add(line);
+            }
+        } catch (IOException e) {
+            e.getMessage();
+            // Handle exceptions here
+        } finally {
+            try {
+                if (isr != null)
+                    isr.close();
+                if (stream != null)
+                    stream.close();
+                if (input != null)
+                    input.close();
+            } catch (Exception e2) {
+                e2.getMessage();
+            }
+        }
+        System.out.println("rawData: "+rawData.size());
+        Log.d("End read Metro Route : "+System.currentTimeMillis());
 
     }
 
@@ -143,7 +180,8 @@ public class MainActivity extends AppCompatActivity {
             if (type.equals("1")) {
                 readMetroStationInfoFile();
             } else  {
-                readMetroRouteFile();
+                readMetroRouteFileNew();
+//                readMetroRouteFile();
             }
 
             return null;
