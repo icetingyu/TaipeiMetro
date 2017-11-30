@@ -1,13 +1,13 @@
 # TaipeiMetro
 Android Hybrid App for checking route plan, ticket price and travel time in Taipei Metro
 
-Offline data
+> Data: Offline data
 
-raphael.js: Creating SVG vector Taipei Metro map
+> raphael.js: Creating SVG vector Taipei Metro map
 
-GoogleMap Javascript V3: Show map around each MRT station.
+> GoogleMap Javascript V3: Show map around each MRT station.
 
-Lottie: Animation
+> Lottie: Animation
 
 
 <img src="https://github.com/icetingyu/TaipeiMetro/blob/master/Screenshots/device-2017-11-28-112356.png" width="300"/>   <img src="https://github.com/icetingyu/TaipeiMetro/blob/master/Screenshots/device-2017-11-28-112510.png" width="300"/>
