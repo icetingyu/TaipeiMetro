@@ -1,4 +1,4 @@
-# TaipeiMetro
+# TaipeiMetro [Android, HTML5, Hybrid]
 Android Hybrid App for checking route plan, ticket price and travel time in Taipei Metro
 
 > Data: Offline data
