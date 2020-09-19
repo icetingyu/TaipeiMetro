@@ -6,17 +6,17 @@ import java.util.*
  * Created by Simon Hsu on 20/9/19.
  */
 
-data class MetroRouteObj (
-    var startStnId: Int = 0,
-    var endStnId: Int = 0,
-    var startStn: String? = null,
-    var endStn: String? = null,
-    var tickets: ArrayList<String>? = null,
-    var timeCost: String? = null,
-    var transferInfo: String? = null
+data class MetroRouteObj(
+        var startStnId: Int = 0,
+        var endStnId: Int = 0,
+        var startStn: String? = null,
+        var endStn: String? = null,
+        var tickets: ArrayList<String>? = null,
+        var timeCost: String? = null,
+        var transferInfo: String? = null
 )
 
-data class MetroStationObj (
+data class MetroStationObj(
         val id: Int = 0,
         var customid: String,
         var nametw: String,
@@ -33,7 +33,7 @@ data class MetroStationObj (
         var customlineid: String? = null
 )
 
-data class RealTimeCalculateObj (
+data class RealTimeCalculateObj(
         var timeCost: String? = null,
         var routeGuide: String? = null,
         var tickets: ArrayList<String> = ArrayList(),

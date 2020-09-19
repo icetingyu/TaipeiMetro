@@ -150,8 +150,7 @@ class MainActivity : AppCompatActivity() {
             val fragment = supportFragmentManager.findFragmentById(R.id.container) as MetroMapFragment?
             fragment?.currentLocation
             return true
-        }
-        else if (id == R.id.switchLanguage) {
+        } else if (id == R.id.switchLanguage) {
             Log.d("click on Switch Language before : " + currentlocale)
             if (currentlocale == "zh_TW") {
                 LocalizationUtil.changeAppLanguage(this@MainActivity, "en_US")

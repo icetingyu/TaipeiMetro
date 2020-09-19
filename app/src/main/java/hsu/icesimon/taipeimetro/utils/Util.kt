@@ -2,7 +2,7 @@ package hsu.icesimon.taipeimetro.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
-import hsu.icesimon.taipeimetro.ui.*
+import hsu.icesimon.taipeimetro.ui.MainActivity
 
 /**
  * Created by Simon Hsu on 20/9/19.
@@ -186,11 +186,11 @@ class Util {
 
     fun findSimplyStationNameById(id: Int, locale: String?): String? {
         var stationName = ""
-        Log.d("locale = "+locale)
+        Log.d("locale = " + locale)
         for (i in MainActivity.Companion.mrtStationInfo.indices) {
             if (MainActivity.Companion.mrtStationInfo[i].id == id) {
-                Log.d("nameen = "+MainActivity.Companion.mrtStationInfo[i].nameen)
-                Log.d("nametw = "+MainActivity.Companion.mrtStationInfo[i].nametw)
+                Log.d("nameen = " + MainActivity.Companion.mrtStationInfo[i].nameen)
+                Log.d("nametw = " + MainActivity.Companion.mrtStationInfo[i].nametw)
 
                 stationName = if (locale != "zh_TW") {
                     MainActivity.Companion.mrtStationInfo[i].nameen

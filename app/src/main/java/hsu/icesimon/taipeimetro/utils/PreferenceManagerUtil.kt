@@ -56,6 +56,7 @@ object PreferenceManagerUtil {
 
     @JvmStatic
     fun getLocale(context: Context?): String {
-        return context?.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)?.getString(KEY_LOCALE, "") ?: ""
+        return context?.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)?.getString(KEY_LOCALE, "")
+                ?: ""
     }
 }

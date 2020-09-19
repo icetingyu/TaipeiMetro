@@ -17,7 +17,7 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.*
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -25,11 +25,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import hsu.icesimon.taipeimetro.App
-import hsu.icesimon.taipeimetro.utils.GPSTracker
 import hsu.icesimon.taipeimetro.R
-import hsu.icesimon.taipeimetro.utils.*
-import hsu.icesimon.taipeimetro.models.*
+import hsu.icesimon.taipeimetro.models.MetroRouteObj
+import hsu.icesimon.taipeimetro.models.RealTimeCalculateObj
+import hsu.icesimon.taipeimetro.utils.GPSTracker
+import hsu.icesimon.taipeimetro.utils.Log
+import hsu.icesimon.taipeimetro.utils.Util
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -46,7 +47,7 @@ class MetroMapFragment() : Fragment() {
     var actionBar: ActionBar? = null
     var gps: GPSTracker? = null
     private val javascriptRunningHandler = Handler()
-    private var currentRoute: String? =""
+    private var currentRoute: String? = ""
     private var currentRouteDistance: String? = ""
     private var selectPair: JSONObject? = null
     private var realTimeObj: RealTimeCalculateObj? = null
@@ -99,7 +100,7 @@ class MetroMapFragment() : Fragment() {
         briefBar?.isClickable = false
         briefBar?.setOnTouchListener { v, event -> true }
         arrow?.setOnClickListener {
-            if(arrow?.rotation == 180f) {
+            if (arrow?.rotation == 180f) {
                 arrow?.rotation = 0f
             } else {
                 arrow?.rotation = 180f
@@ -392,7 +393,7 @@ class MetroMapFragment() : Fragment() {
                         var transfers = 0
                         for (i in routeArray.indices) {
                             val info = routeArray[i]
-                            if (info.contains("轉乘")){
+                            if (info.contains("轉乘")) {
                                 transfers++
                             }
                         }

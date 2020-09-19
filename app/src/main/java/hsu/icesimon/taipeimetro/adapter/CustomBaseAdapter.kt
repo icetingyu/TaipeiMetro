@@ -13,9 +13,12 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import hsu.icesimon.taipeimetro.R
 import hsu.icesimon.taipeimetro.models.RowItem
+import hsu.icesimon.taipeimetro.ui.MainActivity
+import hsu.icesimon.taipeimetro.ui.StationDetailActivity
+import hsu.icesimon.taipeimetro.ui.TransferDetailActivity
+import hsu.icesimon.taipeimetro.utils.Log
 import java.util.*
-import hsu.icesimon.taipeimetro.utils.*
-import hsu.icesimon.taipeimetro.ui.*
+
 /**
  * Created by Simon Hsu on 20/9/19.
  */

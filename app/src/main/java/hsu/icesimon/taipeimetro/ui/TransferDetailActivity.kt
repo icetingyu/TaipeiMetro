@@ -14,14 +14,15 @@ import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import hsu.icesimon.taipeimetro.ui.*
+import hsu.icesimon.taipeimetro.R
 import hsu.icesimon.taipeimetro.adapter.CustomBaseAdapter
-import hsu.icesimon.taipeimetro.models.*
+import hsu.icesimon.taipeimetro.models.RowItem
+import hsu.icesimon.taipeimetro.ui.*
+import hsu.icesimon.taipeimetro.utils.Log
+import hsu.icesimon.taipeimetro.utils.Util
 import org.json.JSONArray
 import org.json.JSONException
 import java.util.*
-import hsu.icesimon.taipeimetro.utils.*
-import hsu.icesimon.taipeimetro.R
 
 
 /**
@@ -262,7 +263,7 @@ class TransferDetailActivity : Activity() {
                 }
             } else {
                 val stations: Array<String>? = mUtils!!.findStationNameArrayById(endStnId)
-                Log.d("EndStations : "+stations.toString())
+                Log.d("EndStations : " + stations.toString())
                 if (stations == null) {
                     if (!(locale == "zh_TW")) {
                         if (!(itemLine == "（")) {

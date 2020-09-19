@@ -14,13 +14,12 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import hsu.icesimon.taipeimetro.R
-import hsu.icesimon.taipeimetro.models.*
+import hsu.icesimon.taipeimetro.models.MetroStationObj
 import hsu.icesimon.taipeimetro.ui.*
-import hsu.icesimon.taipeimetro.utils.*
+import hsu.icesimon.taipeimetro.utils.Log
+import hsu.icesimon.taipeimetro.utils.Util
 import kotlinx.android.synthetic.main.station_guide_layout.*
 
 /**

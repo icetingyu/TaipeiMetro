@@ -17,7 +17,7 @@ class App : Application() {
          * 对于7.0以下，需要在Application创建的时候进行语言切换
          */
         val language: String = PreferenceManagerUtil.getLocale(this)
-        Log.d("Language : "+language)
+        Log.d("Language : " + language)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             getContext()?.let { LocalizationUtil.changeAppLanguage(it, language) }
         }
