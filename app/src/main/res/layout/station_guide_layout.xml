@@ -3,97 +3,98 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="#d04e9ac9">
+        android:background="#d04e9ac9"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/stationNameTW"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:ellipsize="marquee"
             android:layout_centerHorizontal="true"
-            android:textColor="#FFFFFF"
+            android:ellipsize="marquee"
+            android:singleLine="true"
             android:textAlignment="center"
-            tools:text="StationNameTw"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:textSize="18sp" />
+            tools:text="StationNameTw" />
 
         <TextView
             android:id="@+id/otherNumbers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/stationNameTW"
             android:layout_alignBottom="@id/stationNameTW"
-            android:paddingLeft="5dp"
-            android:textColor="#FFFFFF"
+            android:layout_toRightOf="@id/stationNameTW"
             android:gravity="left"
+            android:paddingLeft="5dp"
             android:textAlignment="gravity"
-            tools:text=" (Others Num)"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:textSize="14sp" />
+            tools:text=" (Others Num)" />
 
         <TextView
             android:id="@+id/stationNameEN"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:ellipsize="marquee"
+            android:layout_below="@id/stationNameTW"
             android:layout_centerHorizontal="true"
-            android:textColor="#FFFFFF"
-            android:textAlignment="center"
+            android:ellipsize="marquee"
             android:gravity="center"
-            tools:text="StationNameEn"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
             android:textSize="14sp"
-            android:layout_below="@id/stationNameTW" />
+            tools:text="StationNameEn" />
 
         <ImageButton
             android:id="@+id/backBtn"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:src="@drawable/material_back_button"
             android:background="#00000000"
             android:scaleType="fitCenter"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
+            android:src="@drawable/material_back_button"
             android:visibility="visible" />
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_below="@id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:animateLayoutChanges="true">
+        android:layout_below="@id/titleBar"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
-            android:layout_below="@id/titleBar">
+            android:layout_below="@id/titleBar"
+            android:layout_weight="4">
 
 
             <WebView
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
             <TextView
                 android:id="@+id/error"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:textSize="30sp"
+                android:text="NO NETWORK\nPlease try again"
                 android:textColor="#505050"
-                android:text="NO NETWORK\nPlease try again"/>
+                android:textSize="30sp" />
         </RelativeLayout>
 
 
@@ -101,9 +102,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:id="@+id/additionalInfo"
                     android:layout_width="wrap_content"

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "352613978993",
+    "firebase_url": "https://taipeimetro-afd8d.firebaseio.com",
+    "project_id": "taipeimetro-afd8d",
+    "storage_bucket": "taipeimetro-afd8d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352613978993:android:7f45488314874281",
+        "android_client_info": {
+          "package_name": "hsu.icesimon.taipeimetro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "352613978993-p1hkdgujpjdl4pgfhoannn3vsgci4csj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hsu.icesimon.taipeimetro",
+            "certificate_hash": "493282e08ea9336ecb1aaa7c241ab6303e8cfbbc"
+          }
+        },
+        {
+          "client_id": "352613978993-996ofiqdeloe80rj2o8hs5ichgusbth3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCciotuQ0rh_9CJMXNz_IJu62UsasCvzGM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "352613978993-996ofiqdeloe80rj2o8hs5ichgusbth3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

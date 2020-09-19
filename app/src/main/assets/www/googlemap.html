@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Simple Map</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=yes">
+    <meta content="initial-scale=1.0, user-scalable=yes" name="viewport">
     <meta charset="utf-8">
     <style>
       html, body, #map-canvas {
@@ -10,6 +10,7 @@
         margin: 0px;
         padding: 0px
       }
+
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script>
@@ -25,9 +26,10 @@ function initialize(lat, lon) {
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
+
     </script>
-  </head>
-  <body>
-    <div id="map-canvas"></div>
-  </body>
+</head>
+<body>
+<div id="map-canvas"></div>
+</body>
 </html>

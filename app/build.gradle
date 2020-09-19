@@ -1,4 +1,8 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion androidConfig.compileSdkVersion
@@ -10,17 +14,62 @@ android {
         targetSdkVersion androidConfig.targetSdkVersion
         versionCode 7
         versionName "1.0.6"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.generatedDensities = ['hdpi', 'xxhdpi']
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+//        debug {
+//            storeFile file('../italki_debug.keystore')
+//            keyAlias 'italki'
+//            keyPassword 'italki'
+//            storePassword 'italki'
+//        }
+        release {
+            try {
+                storeFile file('../aeo_android.keystore')
+                storePassword 'ck881024'
+                keyAlias 'aeo_android.keystore'
+                keyPassword 'ck881024'
+            } catch (ex) {
+                throw new InvalidUserDataException(ex.toString())
+            }
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'androidx.appcompat:appcompat:1.2.0'
+    }
+}
+
+
+
 dependencies {
+    implementation deps.kotlinStdLib
+    implementation deps.kotlinReflect
     implementation deps.appCompat
     implementation deps.multidex
     implementation deps.material
@@ -28,8 +77,6 @@ dependencies {
     implementation deps.gson
     implementation deps.googleReferral
     implementation deps.firebaseanalytics
-    implementation 'com.airbnb.android:lottie:3.4.2'
-    // Firebase dependencies
-    implementation 'com.google.firebase:firebase-invites:17.0.0'
-    implementation 'com.google.firebase:firebase-auth:19.4.0'
+    implementation deps.firebaseDynamicLinks
+    implementation deps.lottie
 }

@@ -1,142 +1,151 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainActivity$PlaceholderFragment">
+    android:layout_height="match_parent">
 
     <WebView
         android:id="@+id/webview"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
     <LinearLayout
         android:id="@+id/guideBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="#99FFFFFF"
         android:gravity="center"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true">
+        android:visibility="gone">
+
         <Button
             android:id="@+id/startStation"
-            android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="311 XIAONANMEN"
-            android:textSize="18sp"
-            android:textColor="#ffffff"
             android:layout_margin="5dp"
-            android:padding="5dp"
+            android:layout_weight="2"
             android:background="@drawable/material_roundcorner_button_blue"
-            android:visibility="invisible"/>
+            android:padding="5dp"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:visibility="invisible"
+            tools:text="311 XIAONANMEN" />
+
         <ImageButton
             android:id="@+id/arrow"
-            android:layout_weight="0.7"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:src="@drawable/arrow"
+            android:layout_gravity="center"
+            android:layout_weight="0.7"
             android:background="#00000000"
             android:scaleType="fitCenter"
-            android:layout_gravity="center"
-            android:visibility="invisible"/>
+            android:src="@drawable/arrow"
+            android:visibility="invisible" />
+
         <Button
             android:id="@+id/endStation"
-            android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="大安森林公園"
             android:layout_margin="5dp"
-            android:textSize="18sp"
-            android:textColor="#ffffff"
+            android:layout_weight="2"
             android:background="@drawable/material_roundcorner_button_blue"
             android:padding="5dp"
-            android:visibility="invisible"/>
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:visibility="invisible"
+            tools:text="大安森林公園" />
         <!--<ImageButton-->
-            <!--android:id="@+id/guideBtn"-->
-            <!--android:layout_weight="0.7"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height= "40dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:src="@drawable/material_guide_button"-->
-            <!--android:background="#00000000"-->
-            <!--android:scaleType="fitCenter"-->
-            <!--android:visibility="invisible"/>-->
+        <!--android:id="@+id/guideBtn"-->
+        <!--android:layout_weight="0.7"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height= "40dp"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:src="@drawable/material_guide_button"-->
+        <!--android:background="#00000000"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:visibility="invisible"/>-->
     </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/briefBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/guideBar"
-        android:padding="5dp"
         android:background="#BEFFCBA4"
         android:clickable="false"
+        android:padding="5dp"
         android:visibility="invisible">
+
         <ImageButton
             android:id="@+id/guideBtn"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="center"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_gravity="center"
             android:layout_marginRight="10dp"
-            android:src="@drawable/material_guide_button"
             android:background="#00000000"
             android:scaleType="fitCenter"
-            android:layout_alignParentRight="true"
-            android:visibility="visible"/>
+            android:src="@drawable/material_guide_button"
+            android:visibility="visible" />
+
         <TextView
             android:id="@+id/briefText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:gravity="center_vertical"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/guideBtn"
-            tools:text="從A到B佔途經1站,轉乘0次,預計3分鐘到達,單程票NT$20"/>
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            tools:text="從A到B佔途經1站,轉乘0次,預計3分鐘到達,單程票NT$20" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/divider"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_above="@id/briefBar"
         android:background="#FFFFFF"
-        android:visibility="invisible">
-    </RelativeLayout>
+        android:visibility="invisible"></RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/splashscreen"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center"
         android:layout_centerInParent="true"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/background">
+        android:layout_centerVertical="true"
+        android:background="@color/background"
+        android:gravity="center">
+
         <TextView
             android:id="@+id/splashName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:text="@string/app_name"
             android:textColor="#FFFFFF"
-            android:textSize="40sp"
-            android:layout_centerHorizontal="true"/>
+            android:textSize="40sp" />
+
         <TextView
             android:id="@+id/desc"
-            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/splashName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
             android:text="@string/intro"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:layout_centerHorizontal="true"/>
+            android:textSize="20sp" />
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animation_view"
-            android:layout_below="@id/desc"
             android:layout_width="300dp"
             android:layout_height="300dp"
+            android:layout_below="@id/desc"
             android:layout_centerHorizontal="true"
+            app:lottie_autoPlay="true"
             app:lottie_fileName="loading.json"
-            app:lottie_loop="true"
-            app:lottie_autoPlay="true" />
+            app:lottie_loop="true" />
     </RelativeLayout>
 </RelativeLayout>

@@ -3,47 +3,49 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
 
     <!--<ImageView-->
-        <!--android:id="@+id/eventDetailImage"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:scaleType="centerCrop"-->
-        <!--android:adjustViewBounds="true"-->
-        <!--android:background="#000000"/>-->
+    <!--android:id="@+id/eventDetailImage"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:background="#000000"/>-->
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/routePlanTime"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:lines="1"
-            android:ellipsize="marquee"
-            android:padding="10dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:background="#55000000"
-            android:textColor="#FFFFFF"
-            android:textAlignment="center"
+            android:ellipsize="marquee"
             android:gravity="center"
-            tools:text="Time"
+            android:lines="1"
+            android:padding="10dp"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:textSize="18sp" />
+            tools:text="Time" />
+
         <ImageButton
             android:id="@+id/backBtn"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:src="@drawable/material_back_button"
             android:background="#00000000"
             android:scaleType="fitCenter"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:visibility="visible"/>
+            android:src="@drawable/material_back_button"
+            android:visibility="visible" />
     </RelativeLayout>
 
     <LinearLayout
@@ -53,78 +55,85 @@
         android:layout_below="@id/titleBar"
         android:layout_margin="10dp"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="單程票"
+                android:gravity="center"
                 android:text="@string/singleRide"
+                android:textColor="#4e9ac9"
                 android:textSize="20sp"
-                android:gravity="center"
-                android:textColor="#4e9ac9"/>
+                tools:text="單程票" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="悠遊卡"
+                android:gravity="center"
                 android:text="@string/easyCard"
+                android:textColor="#8bb93b"
                 android:textSize="20sp"
-                android:gravity="center"
-                android:textColor="#8bb93b"/>
+                tools:text="悠遊卡" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="優惠卡"
-                android:text="@string/concessionaire"
-                android:textSize="20sp"
                 android:gravity="center"
-                android:textColor="#f29c33"/>
+                android:text="@string/concessionaire"
+                android:textColor="#f29c33"
+                android:textSize="20sp"
+                tools:text="優惠卡" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/singleRidePrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="NTD 20"
-                android:text="@string/singleRide"
-                android:textSize="18sp"
                 android:gravity="center"
-                android:textColor="@color/material_blue_grey_800"/>
+                android:text="@string/singleRide"
+                android:textColor="@color/material_blue_grey_800"
+                android:textSize="18sp"
+                tools:text="NTD 20" />
+
             <TextView
                 android:id="@+id/easyCardPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="NTD 16"
-                android:text="@string/easyCard"
-                android:textSize="18sp"
                 android:gravity="center"
-                android:textColor="@color/material_blue_grey_800"/>
+                android:text="@string/easyCard"
+                android:textColor="@color/material_blue_grey_800"
+                android:textSize="18sp"
+                tools:text="NTD 16" />
+
             <TextView
                 android:id="@+id/concessionairePrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="NTD 8"
-                android:text="@string/concessionaire"
-                android:textSize="18sp"
                 android:gravity="center"
-                android:textColor="@color/material_blue_grey_800"/>
+                android:text="@string/concessionaire"
+                android:textColor="@color/material_blue_grey_800"
+                android:textSize="18sp"
+                tools:text="NTD 8" />
         </LinearLayout>
     </LinearLayout>
 
     <ListView
         android:id="@+id/list"
-        android:layout_below="@id/timeContainer"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:text="ListView">
-    </ListView>
+        android:layout_below="@id/timeContainer"
+        android:text="ListView"></ListView>
 </RelativeLayout>
