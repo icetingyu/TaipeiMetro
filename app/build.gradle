@@ -1,14 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion androidConfig.compileSdkVersion
+    buildToolsVersion androidConfig.buildToolsVersion
+
     defaultConfig {
         applicationId "hsu.icesimon.taipeimetro"
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 21
-        versionName "1.0.3"
+        minSdkVersion androidConfig.minSdkVersion
+        targetSdkVersion androidConfig.targetSdkVersion
+        versionCode 7
+        versionName "1.0.6"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -18,10 +21,15 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //noinspection GradleCompatible
-    implementation 'androidx.appcompat:appcompat:1.2.0-rc01'
-    implementation 'com.google.android.material:material:1.1.0-beta02'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.airbnb.android:lottie:3.3.1'
+    implementation deps.appCompat
+    implementation deps.multidex
+    implementation deps.material
+    implementation deps.swiperefreshlayout
+    implementation deps.gson
+    implementation deps.googleReferral
+    implementation deps.firebaseanalytics
+    implementation 'com.airbnb.android:lottie:3.4.2'
+    // Firebase dependencies
+    implementation 'com.google.firebase:firebase-invites:17.0.0'
+    implementation 'com.google.firebase:firebase-auth:19.4.0'
 }

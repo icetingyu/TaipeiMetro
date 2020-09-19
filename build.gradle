@@ -1,20 +1,57 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    repositories {
-        jcenter()
-        google()
+    apply from: rootProject.file("dependencies.gradle")
+
+    ext {
+        kotlinVersion = '1.3.61'
+        compileSdkVersion = androidConfig.compileSdkVersion
+        buildToolsVersion = androidConfig.buildToolsVersion
+        minSdkVersion = androidConfig.minSdkVersion
+        targetSdkVersion = androidConfig.targetSdkVersion
     }
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath deps.androidPlugin
+        classpath deps.kotlinGradlePlugin
+        classpath deps.googleplayservice
+    }
+
+
+    subprojects { subproject ->
+        beforeEvaluate{
+            if((subproject.plugins.hasPlugin('android') || subproject.plugins.hasPlugin('android-library'))) {
+                android {
+                    compileSdkVersion androidConfig.compileSdkVersion
+                    buildToolsVersion androidConfig.buildToolsVersion
+                    minSdkVersion androidConfig.minSdkVersion
+                    targetSdkVersion androidConfig.targetSdkVersion
+                }
+            }
+        }
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com/' }
+        flatDir {
+            dirs 'src/main/libs'
+        }
     }
+
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
