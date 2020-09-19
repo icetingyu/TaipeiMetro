@@ -1,11 +1,13 @@
-package hsu.icesimon.taipeimetro
+package hsu.icesimon.taipeimetro.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
+import hsu.icesimon.taipeimetro.ui.*
 
 /**
- * Created by simon on 2017/11/27.
+ * Created by Simon Hsu on 20/9/19.
  */
+
 class Util {
     fun isOnline(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -184,11 +186,15 @@ class Util {
 
     fun findSimplyStationNameById(id: Int, locale: String?): String? {
         var stationName = ""
+        Log.d("locale = "+locale)
         for (i in MainActivity.Companion.mrtStationInfo.indices) {
             if (MainActivity.Companion.mrtStationInfo[i].id == id) {
-                stationName = if (locale != "zh_TW") ({
+                Log.d("nameen = "+MainActivity.Companion.mrtStationInfo[i].nameen)
+                Log.d("nametw = "+MainActivity.Companion.mrtStationInfo[i].nametw)
+
+                stationName = if (locale != "zh_TW") {
                     MainActivity.Companion.mrtStationInfo[i].nameen
-                }).toString() else {
+                } else {
                     MainActivity.Companion.mrtStationInfo[i].nametw + "\n" + MainActivity.Companion.mrtStationInfo[i].nameen
                 }
                 break

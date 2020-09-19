@@ -1,8 +1,7 @@
-package hsu.icesimon.taipeimetro
+package hsu.icesimon.taipeimetro.ui
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -21,6 +20,9 @@ import com.google.firebase.dynamiclinks.DynamicLink.AndroidParameters
 import com.google.firebase.dynamiclinks.DynamicLink.IosParameters
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.gson.Gson
+import hsu.icesimon.taipeimetro.utils.*
+import hsu.icesimon.taipeimetro.R
+import hsu.icesimon.taipeimetro.models.*
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -28,8 +30,9 @@ import java.io.InputStreamReader
 import java.util.*
 
 /**
- * Created by Simon Hsu on 3/29/15.
+ * Created by Simon Hsu on 20/9/19.
  */
+
 class MainActivity : AppCompatActivity() {
     var referrerClient: InstallReferrerClient? = null
     private var refer_from: TextView? = null
@@ -47,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         mSP = PreferenceManager.getDefaultSharedPreferences(baseContext)
         val currentlocale = mSP?.getString("locale", "")
         Log.d("Oncreate currentlocale: $currentlocale")
+
         if (currentlocale == "") {
             locale = Locale.getDefault().country
             Log.d("Oncreate locale: " + locale)
@@ -193,7 +197,7 @@ class MainActivity : AppCompatActivity() {
                 e2.message
             }
         }
-        Log.d("rawData: "+ rawData.size.toString())
+        Log.d("rawData: " + rawData.size.toString())
         Log.d("End read Metro Route : " + System.currentTimeMillis())
     }
 
@@ -261,12 +265,6 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        // your code here, you can use newConfig.locale if you need to check the language
-        // or just re-set all the labels to desired string resource
     }
 
     private fun setupPlayStoreConnection() {

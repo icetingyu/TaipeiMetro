@@ -1,4 +1,4 @@
-package hsu.icesimon.taipeimetro
+package hsu.icesimon.taipeimetro.adapter
 
 import android.app.Activity
 import android.content.Context
@@ -11,16 +11,19 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import hsu.icesimon.taipeimetro.R
+import hsu.icesimon.taipeimetro.models.RowItem
 import java.util.*
-
+import hsu.icesimon.taipeimetro.utils.*
+import hsu.icesimon.taipeimetro.ui.*
 /**
- * Created by Simon Hsu on 15/3/28.
+ * Created by Simon Hsu on 20/9/19.
  */
+
 class CustomBaseAdapter(var context: Context, var rowItems: List<RowItem>) : BaseAdapter() {
     var localRowItems: List<RowItem> = ArrayList()
     var mInflater: LayoutInflater
     var links = ArrayList<String>()
-    private val sectionHeader = TreeSet<Int>()
 
     // So Strange, without this the holder will show duplicate items.
     override fun getViewTypeCount(): Int {
@@ -43,7 +46,6 @@ class CustomBaseAdapter(var context: Context, var rowItems: List<RowItem>) : Bas
     }
 
     override fun getItemViewType(position: Int): Int {
-        // .d("type : "+ (sectionHeader.contains(position) ? TYPE_SEPARATOR : TYPE_ITEM));
 //        return (rowItems.get(position).getType() == 0) ? TYPE_SEPARATOR : TYPE_ITEM;
         return rowItems[position].type
     }
@@ -52,7 +54,7 @@ class CustomBaseAdapter(var context: Context, var rowItems: List<RowItem>) : Bas
         return rowItems[position].desc
     }
 
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         // TODO Auto-generated method stub
         var convertView = convertView
         var holder: ViewHolder? = null
@@ -85,7 +87,7 @@ class CustomBaseAdapter(var context: Context, var rowItems: List<RowItem>) : Bas
                 holder.container = convertView.findViewById<View>(R.id.routeContainer) as RelativeLayout
                 holder.startLineIcon = convertView.findViewById<View>(R.id.startLineIcon) as ImageView
             }
-            convertView.tag = holder
+            convertView?.tag = holder
         } else {
             holder = convertView.tag as ViewHolder
         }
@@ -140,7 +142,7 @@ class CustomBaseAdapter(var context: Context, var rowItems: List<RowItem>) : Bas
             }
         }
         val rowItem = getItem(position)
-        convertView.setOnClickListener {
+        convertView?.setOnClickListener {
             val stationID = rowItem.stationID
             Log.d("stationID; $stationID")
             if (stationID != "") {
@@ -150,7 +152,7 @@ class CustomBaseAdapter(var context: Context, var rowItems: List<RowItem>) : Bas
                 (context as TransferDetailActivity).overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left)
             }
         }
-        return convertView
+        return convertView!!
     }
 
     /* private view holder class */

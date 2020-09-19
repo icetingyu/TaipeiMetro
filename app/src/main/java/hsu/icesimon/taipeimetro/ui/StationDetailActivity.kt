@@ -1,4 +1,4 @@
-package hsu.icesimon.taipeimetro
+package hsu.icesimon.taipeimetro.ui
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -17,10 +17,14 @@ import android.webkit.WebViewClient
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import hsu.icesimon.taipeimetro.R
+import hsu.icesimon.taipeimetro.models.*
+import hsu.icesimon.taipeimetro.ui.*
+import hsu.icesimon.taipeimetro.utils.*
 import kotlinx.android.synthetic.main.station_guide_layout.*
 
 /**
- * Created by Simon Hsu on 15/3/28.
+ * Created by Simon Hsu on 20/9/19.
  */
 
 class StationDetailActivity constructor() : Activity() {
@@ -32,6 +36,7 @@ class StationDetailActivity constructor() : Activity() {
     private var mSP: SharedPreferences? = null
     private var progressBar: ProgressDialog? = null
     private val utils: Util = Util()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.station_guide_layout)

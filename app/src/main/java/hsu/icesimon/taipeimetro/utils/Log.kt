@@ -1,8 +1,9 @@
-package hsu.icesimon.taipeimetro
+package hsu.icesimon.taipeimetro.utils
 
 /**
- * Created by Simon Hsu on 3/29/15.
+ * Created by Simon Hsu on 20/9/19.
  */
+
 object Log {
     private var sMode = Mode.AppNameWithMethod
     private var sEnabled = true

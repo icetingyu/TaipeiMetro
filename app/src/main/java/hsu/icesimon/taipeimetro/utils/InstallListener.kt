@@ -1,8 +1,13 @@
-package hsu.icesimon.taipeimetro
+package hsu.icesimon.taipeimetro.utils
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import hsu.icesimon.taipeimetro.utils.*
+
+/**
+ * Created by Simon Hsu on 20/9/19.
+ */
 
 class InstallListener : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

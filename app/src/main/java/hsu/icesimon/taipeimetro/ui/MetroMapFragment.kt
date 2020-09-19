@@ -1,4 +1,4 @@
-package hsu.icesimon.taipeimetro
+package hsu.icesimon.taipeimetro.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -27,14 +27,20 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import hsu.icesimon.taipeimetro.utils.GPSTracker
+import hsu.icesimon.taipeimetro.R
+import hsu.icesimon.taipeimetro.utils.*
+import hsu.icesimon.taipeimetro.models.*
+
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 import kotlin.math.asin
 
 /**
- * Created by Simon Hsu on 3/29/15.
+ * Created by Simon Hsu on 20/9/19.
  */
+
 @SuppressLint("JavascriptInterface", "SetJavaScriptEnabled")
 class MetroMapFragment() : Fragment() {
     private val EARTH_RADIUS = 6378137.0
@@ -60,7 +66,7 @@ class MetroMapFragment() : Fragment() {
     private var mSP: SharedPreferences? = null
     private val locale2: String? = null
     private var mUtils: Util? = null
-    
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_main, container, false)

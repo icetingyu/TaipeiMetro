@@ -1,4 +1,4 @@
-package hsu.icesimon.taipeimetro
+package hsu.icesimon.taipeimetro.ui
 
 import android.app.Activity
 import android.content.Intent
@@ -14,15 +14,21 @@ import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import hsu.icesimon.taipeimetro.TransferDetailActivity
+import hsu.icesimon.taipeimetro.ui.*
+import hsu.icesimon.taipeimetro.adapter.CustomBaseAdapter
+import hsu.icesimon.taipeimetro.models.*
 import org.json.JSONArray
 import org.json.JSONException
 import java.util.*
+import hsu.icesimon.taipeimetro.utils.*
+import hsu.icesimon.taipeimetro.R
+
 
 /**
- * Created by Simon Hsu on 15/3/28.
+ * Created by Simon Hsu on 20/9/19.
  */
-class TransferDetailActivity constructor() : Activity() {
+
+class TransferDetailActivity : Activity() {
     var listView: ListView? = null
     var rowItems: MutableList<RowItem>? = null
     private val laySwipe: SwipeRefreshLayout? = null
@@ -42,11 +48,12 @@ class TransferDetailActivity constructor() : Activity() {
     private var endStnId: Int = 0
     private var locale: String? = null
     private var mUtils: Util? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.transfer_guide_layout)
         mInflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-        mSP = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+        mSP = PreferenceManager.getDefaultSharedPreferences(baseContext)
         locale = mSP?.getString("locale", "")
         listView = findViewById<View>(R.id.list) as ListView?
         rowItems = ArrayList()
@@ -56,11 +63,11 @@ class TransferDetailActivity constructor() : Activity() {
         concessionairePrice = findViewById<View>(R.id.concessionairePrice) as TextView?
         backBtn = findViewById<View>(R.id.backBtn) as ImageButton?
         backBtn!!.setOnClickListener(object : View.OnClickListener {
-            public override fun onClick(v: View) {
+            override fun onClick(v: View) {
                 finishActivity()
             }
         })
-        val intent: Intent = getIntent()
+        val intent: Intent = intent
         mUtils = Util()
         routes = intent.getStringExtra(MainActivity.Companion.ROUTEPLAN)
         time = intent.getStringExtra(MainActivity.Companion.ROUTETIME).replace("約", "").replace(" 分鐘", "")
@@ -70,13 +77,13 @@ class TransferDetailActivity constructor() : Activity() {
         Log.d("routes: " + routes)
         try {
             val ticketArray: JSONArray = JSONArray(temptickets)
-            singleRidePrice!!.setText(getString(R.string.priceTag) + " " + ticketArray.get(0).toString().replace("元", ""))
-            easyCardPrice!!.setText(getString(R.string.priceTag) + " " + ticketArray.get(1).toString().replace("元", ""))
-            concessionairePrice!!.setText(getString(R.string.priceTag) + " " + ticketArray.get(2).toString().replace("元", ""))
+            singleRidePrice!!.text = getString(R.string.priceTag) + " " + ticketArray.get(0).toString().replace("元", "")
+            easyCardPrice!!.text = getString(R.string.priceTag) + " " + ticketArray.get(1).toString().replace("元", "")
+            concessionairePrice!!.text = getString(R.string.priceTag) + " " + ticketArray.get(2).toString().replace("元", "")
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        routePlanTime!!.setText(getString(R.string.timecost) + time + getString(R.string.timeunit))
+        routePlanTime!!.text = getString(R.string.timecost) + time + getString(R.string.timeunit)
         val routeData: Array<String> = routes?.split("=>")!!.toTypedArray()
         var itemLine: String = ""
         var startPreLine: String = ""
@@ -85,8 +92,8 @@ class TransferDetailActivity constructor() : Activity() {
             val currentLine: String = ""
             val transferLine: String = ""
             var displayText: String = ""
-            var middleText: String? = ""
-            var mDisplayText: String? = ""
+            var middleText: String = ""
+            var mDisplayText: String = ""
             if (info.contains("搭乘")) {
                 val index: Int = info.indexOf("搭乘")
                 val tempLine: String = info.substring(index + 2, index + 3)
@@ -255,6 +262,7 @@ class TransferDetailActivity constructor() : Activity() {
                 }
             } else {
                 val stations: Array<String>? = mUtils!!.findStationNameArrayById(endStnId)
+                Log.d("EndStations : "+stations.toString())
                 if (stations == null) {
                     if (!(locale == "zh_TW")) {
                         if (!(itemLine == "（")) {
@@ -289,14 +297,10 @@ class TransferDetailActivity constructor() : Activity() {
             }
         }
         val adapter: CustomBaseAdapter = CustomBaseAdapter(this@TransferDetailActivity, rowItems as ArrayList<RowItem>)
-        listView!!.setAdapter(adapter)
+        listView!!.adapter = adapter
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    public override fun onConfigurationChanged(newConfig: Configuration) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig)
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -306,17 +310,17 @@ class TransferDetailActivity constructor() : Activity() {
         }
     }
 
-    public override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            swipeStartX = ev.getX()
-            swipeStartY = ev.getY()
-        } else if (ev.getAction() == MotionEvent.ACTION_MOVE) {
-            if (ev.getX() - swipeStartX > 200) {
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            swipeStartX = ev.x
+            swipeStartY = ev.y
+        } else if (ev.action == MotionEvent.ACTION_MOVE) {
+            if (ev.x - swipeStartX > 200) {
                 finishActivity()
                 return true
             }
-        } else if (ev.getAction() == MotionEvent.ACTION_UP) {
-            if (ev.getX() - swipeStartX > 200) {
+        } else if (ev.action == MotionEvent.ACTION_UP) {
+            if (ev.x - swipeStartX > 200) {
                 finishActivity()
                 return true
             }
@@ -324,7 +328,7 @@ class TransferDetailActivity constructor() : Activity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    public override fun onBackPressed() {
+    override fun onBackPressed() {
         finishActivity()
     }
 
