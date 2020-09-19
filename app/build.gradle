@@ -19,7 +19,9 @@ android {
         vectorDrawables.generatedDensities = ['hdpi', 'xxhdpi']
         multiDexEnabled true
     }
-
+    androidExtensions {
+        experimental = true
+    }
     signingConfigs {
 //        debug {
 //            storeFile file('../italki_debug.keystore')

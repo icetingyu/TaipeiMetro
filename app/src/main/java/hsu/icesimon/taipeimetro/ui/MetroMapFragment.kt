@@ -4,13 +4,11 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.text.Html
 import android.view.LayoutInflater
@@ -27,11 +25,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import hsu.icesimon.taipeimetro.App
 import hsu.icesimon.taipeimetro.utils.GPSTracker
 import hsu.icesimon.taipeimetro.R
 import hsu.icesimon.taipeimetro.utils.*
 import hsu.icesimon.taipeimetro.models.*
-
+import kotlinx.android.synthetic.main.fragment_main.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -46,34 +45,31 @@ class MetroMapFragment() : Fragment() {
     private val EARTH_RADIUS = 6378137.0
     var actionBar: ActionBar? = null
     var gps: GPSTracker? = null
-    private var myWebView: WebView? = null
     private val javascriptRunningHandler = Handler()
-    private var startStation: Button? = null
-    private var endStation: Button? = null
-    private var arrow: ImageButton? = null
-    private var guideBtn: ImageButton? = null
-    private var currentRoute: String? = null
-    private var currentRouteDistance: String? = null
+    private var currentRoute: String? =""
+    private var currentRouteDistance: String? = ""
     private var selectPair: JSONObject? = null
-    private var briefBar: RelativeLayout? = null
-    private var divider: RelativeLayout? = null
-    private var guideBar: LinearLayout? = null
-    private var briefText: TextView? = null
     private var realTimeObj: RealTimeCalculateObj? = null
-    private var locale: String? = null
-    private var splashscreen: RelativeLayout? = null
-    private var mTitle: String? = null
-    private var mSP: SharedPreferences? = null
-    private val locale2: String? = null
+    private var locale: String? = ""
+    private var mTitle: String? = ""
+    private var mIntro: String? = ""
+    private val locale2: String? = ""
     private var mUtils: Util? = null
+    private val gson = Gson()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.fragment_main, container, false)
-        mSP = PreferenceManager.getDefaultSharedPreferences(activity?.baseContext)
-        locale = mSP?.getString("locale", "")
-        val locale2 = Locale.getDefault().country
-        Log.d("locale2: $locale2")
+        return inflater.inflate(R.layout.fragment_main, container, false)
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
+
+    }
+
+    private fun initView(rootView: View) {
         var myLocale: Locale? = null
         if (locale != "zh_TW") {
             myLocale = Locale(locale)
@@ -81,40 +77,35 @@ class MetroMapFragment() : Fragment() {
             myLocale = Locale.TRADITIONAL_CHINESE
         }
         mUtils = Util()
+
         val res = activity?.resources
         val dm = res?.displayMetrics
         val conf = res?.configuration
         conf?.locale = myLocale
         res?.updateConfiguration(conf, dm)
         Log.d("metroFragment locale: $locale")
-        mTitle = resources.getString(R.string.app_name)
+
+        mTitle = resources?.getString(R.string.app_name)
+        mIntro = resources?.getString(R.string.intro)
         Log.d("mTitle:  $mTitle")
+        splashName.text = mTitle
+        desc.text = mIntro
+
         actionBar = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.navigationMode = ActionBar.NAVIGATION_MODE_STANDARD
         actionBar?.setTitle(mTitle)
         actionBar?.hide()
-        myWebView = rootView.findViewById<View>(R.id.webview) as WebView
         realTimeObj = RealTimeCalculateObj()
-        startStation = rootView.findViewById<View>(R.id.startStation) as Button
-        endStation = rootView.findViewById<View>(R.id.endStation) as Button
-        briefBar = rootView.findViewById<View>(R.id.briefBar) as RelativeLayout
         briefBar?.isClickable = false
         briefBar?.setOnTouchListener { v, event -> true }
-        divider = rootView.findViewById<View>(R.id.divider) as RelativeLayout
-        guideBar = rootView.findViewById<View>(R.id.guideBar) as LinearLayout
-        briefText = rootView.findViewById<View>(R.id.briefText) as TextView
-        splashscreen = rootView.findViewById<View>(R.id.splashscreen) as RelativeLayout
-        arrow = rootView.findViewById<View>(R.id.arrow) as ImageButton
-        guideBtn = rootView.findViewById<View>(R.id.guideBtn) as ImageButton
-        arrow!!.setOnClickListener {
-            if (arrow!!.rotation == 180f) {
-                arrow!!.rotation = 0f
+        arrow?.setOnClickListener {
+            if(arrow?.rotation == 180f) {
+                arrow?.rotation = 0f
             } else {
-                arrow!!.rotation = 180f
+                arrow?.rotation = 180f
             }
         }
-        guideBtn!!.setOnClickListener { //                realTimeCalcualte();
-            val gson = Gson()
+        guideBtn?.setOnClickListener { //                realTimeCalcualte();
             // Log.d("current Locale :"+ Locale.getDefault().getCountry());
             val intent = Intent(activity, TransferDetailActivity::class.java)
             intent.putExtra(MainActivity.Companion.ROUTEPLAN, realTimeObj?.routeGuide)
@@ -125,33 +116,32 @@ class MetroMapFragment() : Fragment() {
             activity?.startActivityForResult(intent, Activity.RESULT_OK)
             activity?.overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left)
         }
-        startStation!!.setOnClickListener {
+        startStation?.setOnClickListener {
             realTimeCalcualte()
             val intent = Intent(activity, StationDetailActivity::class.java)
             intent.putExtra(MainActivity.Companion.CURRENTSTATION, realTimeObj?.startStnId)
             activity?.startActivityForResult(intent, Activity.RESULT_OK)
             activity?.overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left)
         }
-        endStation!!.setOnClickListener {
+        endStation?.setOnClickListener {
             val intent = Intent(activity, StationDetailActivity::class.java)
             intent.putExtra(MainActivity.Companion.CURRENTSTATION, realTimeObj?.endStnId)
             (activity as MainActivity?)!!.startActivityForResult(intent, Activity.RESULT_OK)
             (activity as MainActivity?)!!.overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left)
         }
         setup()
-        return rootView
     }
 
     private fun setup() {
-        myWebView!!.requestFocus()
-        myWebView!!.settings.javaScriptEnabled = true
-        myWebView!!.settings.builtInZoomControls = true
-        myWebView!!.settings.displayZoomControls = false
-        myWebView!!.settings.useWideViewPort = true
-        myWebView!!.settings.domStorageEnabled = true
-        myWebView!!.addJavascriptInterface(JavaScriptInterface(), "JSInterface")
-        myWebView!!.webViewClient = MyWebViewClient()
-        myWebView!!.loadUrl("file:///android_asset/www/index.html")
+        webview?.requestFocus()
+        webview?.settings?.javaScriptEnabled = true
+        webview?.settings?.builtInZoomControls = true
+        webview?.settings?.displayZoomControls = false
+        webview?.settings?.useWideViewPort = true
+        webview?.settings?.domStorageEnabled = true
+        webview?.addJavascriptInterface(JavaScriptInterface(), "JSInterface")
+        webview?.webViewClient = webviewClient()
+        webview?.loadUrl("file:///android_asset/www/index.html")
     }
 
     override fun onDestroy() {
@@ -165,8 +155,8 @@ class MetroMapFragment() : Fragment() {
          * Or you will get the error Receiver not registered: android.widget.ZoomButtonsController
          * When you destroy the webview but the zoomButtonController hasn't been showed up.
          */
-        myWebView!!.visibility = View.GONE
-        myWebView!!.destroy()
+        webview?.visibility = View.GONE
+        webview?.destroy()
     }
 
     private fun realTimeCalcualte() {
@@ -248,7 +238,7 @@ class MetroMapFragment() : Fragment() {
                     Log.d("shortestID : $shortestID shortestIndex :$shortestIndex shortestDistance :$shortestDistance")
                     Log.d("end of getLocation: " + System.currentTimeMillis())
                     Toast.makeText(activity, getString(R.string.nearestStation) + "\n" + MainActivity.Companion.mrtStationInfo.get(shortestIndex).nametw + " " + MainActivity.Companion.mrtStationInfo.get(shortestIndex).nameen, Toast.LENGTH_LONG).show()
-                    myWebView!!.loadUrl("javascript:markNearStation('" + MainActivity.Companion.mrtStationInfo.get(shortestIndex).customid + "')")
+                    webview?.loadUrl("javascript:markNearStation('" + MainActivity.Companion.mrtStationInfo.get(shortestIndex).customid + "')")
                 } else {
                     // Can't get location.
                     // GPS or netWork is not enabled.
@@ -322,7 +312,7 @@ class MetroMapFragment() : Fragment() {
         ), REQUEST_CODE_ASK_ASSESS_FINE_LOCATION_PERMISSIONS)
     }
 
-    private inner class MyWebViewClient() : WebViewClient() {
+    private inner class webviewClient() : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             return super.shouldOverrideUrlLoading(view, url)
         }
@@ -330,7 +320,7 @@ class MetroMapFragment() : Fragment() {
         override fun onPageFinished(view: WebView, url: String) {
             actionBar!!.setDisplayShowTitleEnabled(true)
             actionBar!!.show()
-            myWebView!!.postDelayed({ myWebView!!.scrollTo(1000, 1000) }, 150)
+            webview?.postDelayed({ webview?.scrollTo(1000, 1000) }, 150)
             splashscreen!!.visibility = View.GONE
             super.onPageFinished(view, url)
             // do your stuff here

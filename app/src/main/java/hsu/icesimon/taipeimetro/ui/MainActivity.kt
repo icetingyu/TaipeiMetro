@@ -1,12 +1,11 @@
 package hsu.icesimon.taipeimetro.ui
 
+import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.RemoteException
-import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,13 +15,15 @@ import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.dynamiclinks.DynamicLink.AndroidParameters
-import com.google.firebase.dynamiclinks.DynamicLink.IosParameters
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.gson.Gson
-import hsu.icesimon.taipeimetro.utils.*
+import hsu.icesimon.taipeimetro.App
 import hsu.icesimon.taipeimetro.R
-import hsu.icesimon.taipeimetro.models.*
+import hsu.icesimon.taipeimetro.models.MetroRouteObj
+import hsu.icesimon.taipeimetro.models.MetroStationObj
+import hsu.icesimon.taipeimetro.utils.LocalizationUtil
+import hsu.icesimon.taipeimetro.utils.Log
+import hsu.icesimon.taipeimetro.utils.PreferenceManagerUtil
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -34,141 +35,53 @@ import java.util.*
  */
 
 class MainActivity : AppCompatActivity() {
+
     var referrerClient: InstallReferrerClient? = null
     private var refer_from: TextView? = null
-
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-    private val mTitle: CharSequence? = null
-    private var mSP: SharedPreferences? = null
+    val ZHTW = "zh_TW"
+    val ENUS = "en_us"
+    private var currentlocale: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val fragmentManager = supportFragmentManager
-        mSP = PreferenceManager.getDefaultSharedPreferences(baseContext)
-        val currentlocale = mSP?.getString("locale", "")
-        Log.d("Oncreate currentlocale: $currentlocale")
+        initView()
+    }
 
+    override fun attachBaseContext(newBase: Context?) {
+        //获取我们存储的语言环境 比如 "en","zh",等等
+        currentlocale = PreferenceManagerUtil.getLocale(App.getContext())
+
+        super.attachBaseContext(newBase?.let { LocalizationUtil.attachBaseContext(it, currentlocale) })
+    }
+
+    private fun initView() {
+        val fragmentManager = supportFragmentManager
+        currentlocale = PreferenceManagerUtil.getLocale(this@MainActivity)
+        Log.d("Oncreate currentlocale: $currentlocale")
+//
         if (currentlocale == "") {
             locale = Locale.getDefault().country
             Log.d("Oncreate locale: " + locale)
             if (locale == "TW") {
-                mSP?.edit()?.putString("locale", "zh_TW")?.commit()
+                PreferenceManagerUtil.saveLocale(this@MainActivity, ZHTW)
             } else {
-                mSP?.edit()?.putString("locale", "en_US")?.commit()
+                PreferenceManagerUtil.saveLocale(this@MainActivity, ENUS)
             }
         } else {
             locale = currentlocale
         }
-
-        locale = mSP?.getString("locale", "")
-        var myLocale: Locale? = null
-        myLocale = if (locale != "zh_TW") {
-            Locale(locale)
-        } else {
-            Locale.TRADITIONAL_CHINESE
-        }
-        val res = resources
-        val dm = res.displayMetrics
-        val conf = res.configuration
-        conf.locale = myLocale
-        res.updateConfiguration(conf, dm)
-//        updateLanguage(myLocale)
-        Log.d("Oncreate locale : " + locale)
         refer_from = findViewById(R.id.refer_from)
 
         fragmentManager.beginTransaction()
                 .replace(R.id.container, MetroMapFragment.Companion.newInstance(1))
                 .commit()
-        loadData("1").execute()
+//        loadData("1").execute()
         loadData("2").execute()
-        val dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setLink(Uri.parse("https://www.example.com/"))
-                .setDomainUriPrefix("https://taipeimetro.page.link") // Open links with this app on Android
-                .setAndroidParameters(AndroidParameters.Builder("hsu.icesimon.taipeimetro").build()) // Open links with com.example.ios on iOS
-                .setIosParameters(IosParameters.Builder("com.example.ios").build())
-                .buildDynamicLink()
-        val dynamicLinkUri = dynamicLink.uri
-        Log.d("dynamicLinkUri$dynamicLinkUri")
-
-
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        String uid = user.getUid();
-//        String link = "https://mygame.example.com/?invitedby=" + uid;
-//        FirebaseDynamicLinks.getInstance().createDynamicLink()
-//                .setLink(Uri.parse(link))
-//                .setDomainUriPrefix("https://example.page.link")
-//                .setAndroidParameters(
-//                        new DynamicLink.AndroidParameters.Builder("hsu.icesimon.taipeimetro")
-//                                .setMinimumVersion(125)
-//                                .build())
-//                .setIosParameters(
-//                        new DynamicLink.IosParameters.Builder("com.example.ios")
-//                                .setAppStoreId("id1140000003")
-//                                .setMinimumVersion("1.0.1")
-//                                .build())
-//                .buildShortDynamicLink()
-//                .addOnSuccessListener(new OnSuccessListener<ShortDynamicLink>() {
-//                    @Override
-//                    public void onSuccess(ShortDynamicLink shortDynamicLink) {
-//                        Uri mInvitationUrl = shortDynamicLink.getShortLink();
-//                        Log.d("mInvitationUrl" + mInvitationUrl.toString());
-//
-//                    }
-//                });
-
-
-//        FirebaseDynamicLinks.getInstance()
-//                .getDynamicLink(getIntent())
-//                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-//                    @Override
-//                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-//                        // Get deep link from result (may be null if no link is found)
-//                        Uri deepLink = null;
-//                        if (pendingDynamicLinkData != null) {
-//                            deepLink = pendingDynamicLinkData.getLink();
-//                        }
-//                        Log.d("DeepLink"+ deepLink.toString());
-//                        String referrerUid = deepLink.getQueryParameter("invitedby");
-//                        Log.d("DeepLink invitedby "+ referrerUid);
-//
-//                        // Handle the deep link. For example, open the linked
-//                        // content, or apply promotional credit to the user's
-//                        // account.
-//                        // ...
-//
-//                        // ...
-//                    }
-//                })
-//                .addOnFailureListener(this, new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.w("getDynamicLink:onFailure", e);
-//                    }
-//                });
         setupPlayStoreConnection()
     }
 
-    private fun readMetroRouteFile() {
-        var tContents = ""
-        try {
-            val stream = assets.open("TaipeiMetro_ori.txt")
-            val size = stream.available()
-            val buffer = ByteArray(size)
-            stream.read(buffer)
-            stream.close()
-            tContents = String(buffer)
-        } catch (e: IOException) {
-            // Handle exceptions here
-        }
-        val gson = Gson()
-        val readJson = gson.fromJson<Array<MetroRouteObj>>(tContents, Array<MetroRouteObj>::class.java)
-        metroRouteObjs = ArrayList(Arrays.asList(*readJson))
-    }
-
-    private fun readMetroRouteFileNew() {
+    private fun readMetroRouteFileOptimized() {
         Log.d("Start read Metro Route : " + System.currentTimeMillis())
         var stream: InputStream? = null
         var isr: InputStreamReader? = null
@@ -220,8 +133,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
-        Log.d("OncreateOptionMenu : " + mSP!!.getString("locale", ""))
-        if (mSP!!.getString("locale", "") == "zh_TW") {
+
+        Log.d("OncreateOptionMenu : $currentlocale")
+        if (currentlocale == "zh_TW") {
             menu.findItem(R.id.switchLanguage).setIcon(R.drawable.en)
         } else {
             menu.findItem(R.id.switchLanguage).setIcon(R.drawable.ch)
@@ -230,38 +144,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         val id = item.itemId
         if (id == R.id.location) {
             val fragment = supportFragmentManager.findFragmentById(R.id.container) as MetroMapFragment?
             fragment?.currentLocation
             return true
-        } else if (id == R.id.switchLanguage) {
-            Log.d("click on Switch Language before : " + mSP!!.getString("locale", ""))
-            if (mSP!!.getString("locale", "") == "zh_TW") {
-                item.setIcon(R.drawable.ch)
-                val myLocale = Locale("en_US")
-                mSP!!.edit().putString("locale", "en_US").commit()
-                val res = resources
-                val dm = res.displayMetrics
-                val conf = res.configuration
-                conf.locale = myLocale
-                res.updateConfiguration(conf, dm)
-                val refresh = Intent(this, MainActivity::class.java)
-                startActivity(refresh)
+        }
+        else if (id == R.id.switchLanguage) {
+            Log.d("click on Switch Language before : " + currentlocale)
+            if (currentlocale == "zh_TW") {
+                LocalizationUtil.changeAppLanguage(this@MainActivity, "en_US")
+                currentlocale = "en_US"
             } else {
-                item.setIcon(R.drawable.en)
-                mSP!!.edit().putString("locale", "zh_TW").commit()
-                val res = resources
-                val dm = res.displayMetrics
-                val conf = res.configuration
-                conf.locale = Locale.TRADITIONAL_CHINESE
-                res.updateConfiguration(conf, dm)
-                val refresh = Intent(this, MainActivity::class.java)
-                startActivity(refresh)
+                LocalizationUtil.changeAppLanguage(this@MainActivity, "zh_TW")
+                currentlocale = "zh_TW"
             }
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -315,11 +217,6 @@ class MainActivity : AppCompatActivity() {
             }
         }// Handle invite
 
-    // ...
-// Handle error
-    // ...
-    // Get deep link from result (may be null if no link is found)
-    // [END_EXCLUDE]
     private val dynamicLink: Unit
         private get() {
             FirebaseDynamicLinks.getInstance()
@@ -358,8 +255,7 @@ class MainActivity : AppCompatActivity() {
             if (type == "1") {
                 readMetroStationInfoFile()
             } else {
-                readMetroRouteFileNew()
-                //                readMetroRouteFile();
+                readMetroRouteFileOptimized()
             }
             return null
         }
