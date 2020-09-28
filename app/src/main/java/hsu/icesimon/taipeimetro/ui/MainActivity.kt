@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         fragmentManager.beginTransaction()
                 .replace(R.id.container, MetroMapFragment.Companion.newInstance(1))
                 .commit()
-//        loadData("1").execute()
+        loadData("1").execute()
         loadData("2").execute()
         setupPlayStoreConnection()
     }
