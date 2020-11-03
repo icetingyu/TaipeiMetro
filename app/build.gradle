@@ -22,24 +22,6 @@ android {
     androidExtensions {
         experimental = true
     }
-    signingConfigs {
-//        debug {
-//            storeFile file('../italki_debug.keystore')
-//            keyAlias 'italki'
-//            keyPassword 'italki'
-//            storePassword 'italki'
-//        }
-        release {
-            try {
-                storeFile file('../aeo_android.keystore')
-                storePassword 'ck881024'
-                keyAlias 'aeo_android.keystore'
-                keyPassword 'ck881024'
-            } catch (ex) {
-                throw new InvalidUserDataException(ex.toString())
-            }
-        }
-    }
 
     buildTypes {
         release {
