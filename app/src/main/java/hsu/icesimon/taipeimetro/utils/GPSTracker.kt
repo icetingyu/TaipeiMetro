@@ -53,7 +53,7 @@ class GPSTracker(private val mContext: Context?) : Service(), LocationListener {
                 // If GPS enabled, get latitude/longitude using GPS Services
                 if (isGPSEnabled) {
                     if (!this::location.isInitialized) {
-                        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             // TODO: Consider calling
                             //    ActivityCompat#requestPermissions
                             // here to request the missing permissions, and then overriding
@@ -84,8 +84,7 @@ class GPSTracker(private val mContext: Context?) : Service(), LocationListener {
                             MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
                     Log.d("Network")
                     if (locationManager != null) {
-                        location = locationManager!!
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                        location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                         if (location != null) {
                             latitude = location!!.latitude
                             longitude = location!!.longitude
