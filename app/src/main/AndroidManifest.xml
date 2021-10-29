@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="28">
+        tools:targetApi="30">
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="locale|orientation|keyboardHidden|screenSize"
@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="metrotaipei.page.link"
+                    android:host="icesimon.page.link"
                     android:scheme="https" />
             </intent-filter>
         </activity>
