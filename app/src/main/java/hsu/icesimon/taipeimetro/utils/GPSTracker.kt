@@ -69,7 +69,7 @@ class GPSTracker(private val mContext: Context?) : Service(), LocationListener {
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
                         Log.d("GPS Enabled")
                         if (locationManager != null) {
-                            location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                            location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
                             if (location != null) {
                                 latitude = location!!.latitude
                                 longitude = location!!.longitude
@@ -84,7 +84,7 @@ class GPSTracker(private val mContext: Context?) : Service(), LocationListener {
                             MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), this)
                     Log.d("Network")
                     if (locationManager != null) {
-                        location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                        location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
                         if (location != null) {
                             latitude = location!!.latitude
                             longitude = location!!.longitude

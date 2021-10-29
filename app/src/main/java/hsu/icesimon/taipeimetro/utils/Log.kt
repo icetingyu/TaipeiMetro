@@ -37,7 +37,7 @@ object Log {
     }
 
     fun i(message: String?) {
-        if (sEnabled) android.util.Log.i(tag, message)
+        if (sEnabled) android.util.Log.i(tag, message!!)
     }
 
     fun i(message: String?, e: Throwable?) {
@@ -45,7 +45,7 @@ object Log {
     }
 
     fun e(message: String?) {
-        if (sEnabled) android.util.Log.e(tag, message)
+        if (sEnabled) android.util.Log.e(tag, message!!)
     }
 
     fun e(message: String?, e: Throwable?) {
@@ -53,11 +53,11 @@ object Log {
     }
 
     fun d(message: String?) {
-        if (sEnabled) android.util.Log.d(tag, message)
+        if (sEnabled) android.util.Log.d(tag, message!!)
     }
 
     fun v(message: String?) {
-        if (sEnabled) android.util.Log.v(tag, message)
+        if (sEnabled) android.util.Log.v(tag, message!!)
     }
 
     fun v(message: String?, e: Throwable?) {
@@ -65,7 +65,7 @@ object Log {
     }
 
     fun w(message: String?) {
-        if (sEnabled) android.util.Log.w(tag, message)
+        if (sEnabled) android.util.Log.w(tag, message!!)
     }
 
     fun w(message: String?, e: Throwable?) {

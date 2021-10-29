@@ -71,10 +71,10 @@ class TransferDetailActivity : Activity() {
         val intent: Intent = intent
         mUtils = Util()
         routes = intent.getStringExtra(MainActivity.Companion.ROUTEPLAN)
-        time = intent.getStringExtra(MainActivity.Companion.ROUTETIME).replace("約", "").replace(" 分鐘", "")
+        time = intent.getStringExtra(MainActivity.Companion.ROUTETIME)?.replace("約", "")?.replace(" 分鐘", "")
         startStnId = intent.getIntExtra(MainActivity.Companion.ROUTESTART, 0)
         endStnId = intent.getIntExtra(MainActivity.Companion.ROUTEEND, 0)
-        val temptickets: String = intent.getStringExtra(MainActivity.Companion.ROUTETICKETS)
+        val temptickets: String? = intent.getStringExtra(MainActivity.Companion.ROUTETICKETS)
         Log.d("routes: " + routes)
         try {
             val ticketArray: JSONArray = JSONArray(temptickets)

@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
@@ -79,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         loadData("1").execute()
         loadData("2").execute()
         setupPlayStoreConnection()
+        dynamicLink
     }
 
     private fun readMetroRouteFileOptimized() {
@@ -229,9 +231,11 @@ class MainActivity : AppCompatActivity() {
                         if (deepLink != null) {
                             Snackbar.make(findViewById(android.R.id.content),
                                     deepLink.toString(), Snackbar.LENGTH_LONG).show()
-                            Log.d(TAG + " deeplink " + deepLink.toString())
+                            Toast.makeText(applicationContext, TAG + " deeplink " + deepLink.toString(), Toast.LENGTH_SHORT).show();
                         } else {
                             Log.d(TAG + "  getDynamicLink: no link found")
+//                            Toast.makeText(applicationContext, TAG + " getDynamicLink: no link found", Toast.LENGTH_SHORT).show();
+
                             Snackbar.make(findViewById(android.R.id.content),
                                     "No Link Found!", Snackbar.LENGTH_LONG).show()
                         }
