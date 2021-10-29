@@ -227,6 +227,9 @@ class MainActivity : AppCompatActivity() {
                         var deepLink: Uri? = null
                         if (pendingDynamicLinkData != null) {
                             deepLink = pendingDynamicLinkData.link
+                            var aaa: String = pendingDynamicLinkData.utmParameters.toString()
+                            Toast.makeText(applicationContext, TAG + " aaa " + aaa, Toast.LENGTH_SHORT).show()
+
                         }
                         if (deepLink != null) {
                             Snackbar.make(findViewById(android.R.id.content),
