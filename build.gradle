@@ -20,7 +20,7 @@ buildscript {
     dependencies {
         classpath deps.androidPlugin
         classpath deps.kotlinGradlePlugin
-        classpath deps.googleplayservice
+        classpath 'com.google.gms:google-services:4.3.10'
     }
 
 
