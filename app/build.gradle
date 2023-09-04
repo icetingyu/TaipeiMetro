@@ -57,6 +57,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    namespace 'hsu.icesimon.taipeimetro'
 }
 
 configurations.all {
@@ -79,6 +80,4 @@ dependencies {
     implementation 'com.google.firebase:firebase-dynamic-links'
     implementation 'com.google.firebase:firebase-analytics'
     implementation deps.lottie
-    implementation 'com.bugsee:bugsee-android:+'
-
 }

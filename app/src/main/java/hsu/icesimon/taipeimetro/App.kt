@@ -3,7 +3,6 @@ package hsu.icesimon.taipeimetro
 import android.app.Application
 import android.content.Context
 import android.os.Build
-//import com.bugsee.library.Bugsee
 import hsu.icesimon.taipeimetro.utils.LocalizationUtil
 import hsu.icesimon.taipeimetro.utils.Log
 import hsu.icesimon.taipeimetro.utils.PreferenceManagerUtil
@@ -22,8 +21,6 @@ class App : Application() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             getContext()?.let { LocalizationUtil.changeAppLanguage(it, language) }
         }
-//        Bugsee.launch(this, "27953263-ec8f-4070-8bed-a6617a8bd6fb");
-
     }
 
     companion object {
